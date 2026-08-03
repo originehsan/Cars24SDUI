@@ -1,7 +1,20 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "types": ["jest"]
+    "types": ["jest"],
+
+    // Path aliases for the editor and TypeScript compiler.
+    // Must exactly match the "alias" map in babel.config.js —
+    // this file only helps TypeScript/VS Code understand imports,
+    // it does not affect how Metro resolves them at runtime.
+    // (No "baseUrl" — deprecated in TS 6.0. Each path below has an
+    // explicit "./" prefix instead, per TypeScript's own migration guide.)
+    "paths": {
+      "@core/*": ["./src/core/*"],
+      "@sdui/*": ["./src/sdui/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@navigation/*": ["./src/navigation/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
