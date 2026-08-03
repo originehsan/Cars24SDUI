@@ -2,6 +2,7 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "types": ["jest"],
+    "resolveJsonModule": true,
 
     // Path aliases for the editor and TypeScript compiler.
     // Must exactly match the "alias" map in babel.config.js —

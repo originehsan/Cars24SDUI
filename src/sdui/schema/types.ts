@@ -240,3 +240,34 @@ type _AssertInSync = ComponentType extends SchemaTypes
     : never;
 const _typesInSync: _AssertInSync = true;
 void _typesInSync;
+
+
+// ---------------------------------------------------------------------
+// Lenient top-level check: validates the screen's shell (does it have
+// a version, name, and a sections array?) WITHOUT validating each
+// section's internal shape. Per-section validation happens separately
+// in the renderer, so one malformed section can be dropped individually
+// instead of failing the whole screen.
+// ---------------------------------------------------------------------
+export const ScreenShellSchema = z.object({
+    schemaVersion: z.string(),
+    screenName: z.string(),
+    sections: z.array(z.unknown()),
+});
+
+// Loose section shell — checks the section's structure and that
+// component.type/id exist, WITHOUT validating type-specific props.
+// Used to tell "genuinely unknown type" (show fallback) apart from
+// "known type, malformed props" (drop that node quietly).
+export const SectionShellSchema = z.object({
+  id: z.string(),
+  minVersion: z.string().optional(),
+  visible: z.boolean().default(true),
+  style: StyleSchema,
+  accessibility: AccessibilitySchema.optional(),
+  component: z.object({
+    type: z.string(),
+    id: z.string(),
+    props: z.unknown(),
+  }),
+});

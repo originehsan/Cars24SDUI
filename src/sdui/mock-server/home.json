@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "1.0.0",
+  "screenName": "home",
+  "sections": [
+    {
+      "id": "sec-header",
+      "visible": true,
+      "component": {
+        "type": "header_search",
+        "id": "header-1",
+        "props": {
+          "location": "Ghaziabad",
+          "placeholder": "Search used cars",
+          "tabs": [
+            { "id": "all", "label": "All" },
+            { "id": "buy", "label": "Buy used car" },
+            { "id": "sell", "label": "Sell car" },
+            { "id": "loans", "label": "Loans" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-buy-car",
+      "visible": true,
+      "component": {
+        "type": "card_rail",
+        "id": "rail-buy",
+        "props": {
+          "title": "Buy car",
+          "badgeText": "Up to ₹80,000 off",
+          "cards": [
+            { "id": "c1", "title": "All used cars", "imageUrl": "https://picsum.photos/seed/allcars/300/200" },
+            { "id": "c2", "title": "Budget used cars", "imageUrl": "https://picsum.photos/seed/budget/300/200" },
+            { "id": "c3", "title": "Premium used cars", "imageUrl": "https://picsum.photos/seed/premium/300/200" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-cars-love",
+      "visible": true,
+      "component": {
+        "type": "car_listing_rail",
+        "id": "rail-love",
+        "props": {
+          "title": "Used cars you'll love",
+          "tabs": [
+            { "id": "wishlisted", "label": "Wishlisted" },
+            { "id": "hotdeals", "label": "Hot deals" }
+          ],
+          "selectedTabId": "wishlisted",
+          "cars": [
+            {
+              "id": "car1",
+              "title": "2023 Mahindra XUV300",
+              "variant": "W6 1.2 PETROL",
+              "imageUrl": "https://picsum.photos/seed/xuv300/300/200",
+              "price": "₹6.60 lakh",
+              "emi": "EMI ₹11,651/m*",
+              "km": "25,335 km",
+              "fuel": "Petrol",
+              "transmission": "Manual",
+              "badge": "Cars24 Owned stock",
+              "actions": [{ "type": "navigate", "target": "car_detail", "params": { "carId": "car1" } }]
+            },
+            {
+              "id": "car2",
+              "title": "2012 Volkswagen Vento",
+              "variant": "HIGHLINE DIESEL 1.6",
+              "imageUrl": "https://picsum.photos/seed/vento/300/200",
+              "price": "₹1.72 lakh",
+              "km": "78,002 km",
+              "fuel": "Diesel",
+              "transmission": "Manual",
+              "badge": "Verified Direct seller",
+              "actions": [{ "type": "navigate", "target": "car_detail", "params": { "carId": "car2" } }]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-unknown-demo",
+      "visible": true,
+      "component": {
+        "type": "loyalty_widget_v2",
+        "id": "future-1",
+        "props": {}
+      }
+    },
+    {
+      "id": "sec-footer",
+      "visible": true,
+      "style": { "backgroundColor": "#060B14", "textColor": "#FFFFFF" },
+      "component": {
+        "type": "text_block",
+        "id": "footer-1",
+        "props": { "text": "better drives, better lives — Made with love in Gurugram", "align": "center" }
+      }
+    }
+  ]
+}

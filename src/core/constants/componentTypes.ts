@@ -22,3 +22,8 @@ export const COMPONENT_TYPES = [
 ] as const;
 
 export type ComponentType = (typeof COMPONENT_TYPES)[number];
+
+/** Runtime check: is this string a recognized component type? */
+export function isComponentType(value: string): value is ComponentType {
+  return (COMPONENT_TYPES as readonly string[]).includes(value);
+}
