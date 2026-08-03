@@ -103,6 +103,7 @@ tsc --noEmit                   -- type-check without emitting files
   lost if the cache is cleared — if native build errors reappear
   mentioning std::format, re-apply the patch (see AI_WORKFLOW.md for
   the exact diff).
+- Patched copies that were required for this workspace: `node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h` and `C:\Users\Ehsan Ali\.gradle\caches\9.3.1\transforms\9f31b5b7d16446b33f88a4da01431520\workspace\transformed\react-android-0.86.2-debug\prefab\modules\reactnative\include\react\renderer\core\graphicsConversions.h`.
 
 ## Verification checklist before treating any AI-generated code as done
 
