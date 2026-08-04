@@ -5,6 +5,7 @@ import { Text, Button } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 import { calculateEmi, formatIndianNumber } from '@core/utils/emiCalculator';
 import { runActions } from '@sdui/actions/actionHandler';
+import { useSheetStore } from '@core/store/useSheetStore';
 
 interface RangeConfig {
   min: number;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function EmiCalculator({ principal, interestRatePercent, downPayment, durationMonths, eligibilityActions }: Props) {
+  const openEligibilitySheet = useSheetStore((s) => s.openEligibilitySheet);
   const [downPaymentValue, setDownPaymentValue] = useState(downPayment.default);
   const [duration, setDuration] = useState(durationMonths.default);
 
@@ -111,7 +113,14 @@ export function EmiCalculator({ principal, interestRatePercent, downPayment, dur
       <Text variant="caption" color="textMuted" style={styles.disclaimer}>
         *Final EMI is calculated after income verification.
       </Text>
-      <Button label="Check eligibility" variant="primary" onPress={() => runActions(eligibilityActions as any)} />
+      <Button
+        label="Check eligibility"
+        variant="primary"
+        onPress={() => {
+          runActions(eligibilityActions as any);
+          openEligibilitySheet();
+        }}
+      />
     </View>
   );
 }
