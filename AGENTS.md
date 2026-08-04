@@ -97,13 +97,41 @@ tsc --noEmit                   -- type-check without emitting files
   (NOT the auto-installed 27.1.12297006) — NDK 27+ has a Windows-only
   C++ linking bug. Do not change this without re-verifying both the
   linking bug AND the std::format issue below are still resolved.
+
 - graphicsConversions.h in the react-android prefab package was
   manually patched (std::format -> snprintf) to work around an RN 0.86.2
   + NDK 26 incompatibility. This patch lives in the Gradle cache and is
   lost if the cache is cleared — if native build errors reappear
-  mentioning std::format, re-apply the patch (see AI_WORKFLOW.md for
-  the exact diff).
-- Patched copies that were required for this workspace: `node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h` and `C:\Users\Ehsan Ali\.gradle\caches\9.3.1\transforms\9f31b5b7d16446b33f88a4da01431520\workspace\transformed\react-android-0.86.2-debug\prefab\modules\reactnative\include\react\renderer\core\graphicsConversions.h`.
+  mentioning std::format, re-apply the patch (see below for the diff).
+  IMPORTANT: The Gradle transform cache hash changes every time the cache
+  is regenerated. Do NOT hardcode a specific hash — instead search for
+  the file under `.gradle/caches/9.3.1/transforms/*/workspace/transformed/
+  react-android-0.86.2-debug/prefab/modules/reactnative/include/react/
+  renderer/core/graphicsConversions.h` and patch whichever hash is current.
+  The patch: replace `return std::format("{}%", dimension.value);`
+  with `static thread_local char buf[32]; snprintf(buf, sizeof(buf), "%g%%", dimension.value); return buf;`
+  Apply to BOTH:
+    1. `node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h`
+    2. The current Gradle cache copy (hash varies — find with dir search above)
+
+- react-native-reanimated 4.5.3 + NDK 26 (Clang 17) build failure:
+  Clang 17 cannot compile out-of-line definitions of C++20 constrained
+  partial template specializations (error: "type constraint differs in
+  template redeclaration"). This bug is fixed in Clang 18 (NDK 27+).
+  Fix applied: moved the ResolvableOp-constrained partial specialization
+  method bodies from TransformOperationInterpolator.cpp inline into
+  TransformOperationInterpolator.h. Also added #include <stdexcept>,
+  <string>, <utility> to that header.
+  Files patched:
+    - node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/
+      interpolation/transforms/TransformOperationInterpolator.h
+    - node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/
+      interpolation/transforms/TransformOperationInterpolator.cpp
+  If reanimated is upgraded and this error reappears, check if the new
+  version still has out-of-line definitions for constrained template
+  specializations in other files (search for `template <.*Op ` in .cpp
+  files under node_modules/react-native-reanimated/Common/cpp) and
+  apply the same inline-into-header fix.
 
 ## Verification checklist before treating any AI-generated code as done
 
