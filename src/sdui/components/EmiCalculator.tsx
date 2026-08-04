@@ -4,6 +4,7 @@ import Slider from '@react-native-community/slider';
 import { Text, Button } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 import { calculateEmi, formatIndianNumber } from '@core/utils/emiCalculator';
+import { runActions } from '@sdui/actions/actionHandler';
 
 interface RangeConfig {
   min: number;
@@ -16,9 +17,10 @@ interface Props {
   interestRatePercent: number;
   downPayment: RangeConfig;
   durationMonths: RangeConfig;
+  eligibilityActions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
 
-export function EmiCalculator({ principal, interestRatePercent, downPayment, durationMonths }: Props) {
+export function EmiCalculator({ principal, interestRatePercent, downPayment, durationMonths, eligibilityActions }: Props) {
   const [downPaymentValue, setDownPaymentValue] = useState(downPayment.default);
   const [duration, setDuration] = useState(durationMonths.default);
 
@@ -109,7 +111,7 @@ export function EmiCalculator({ principal, interestRatePercent, downPayment, dur
       <Text variant="caption" color="textMuted" style={styles.disclaimer}>
         *Final EMI is calculated after income verification.
       </Text>
-      <Button label="Check eligibility" variant="primary" />
+      <Button label="Check eligibility" variant="primary" onPress={() => runActions(eligibilityActions as any)} />
     </View>
   );
 }

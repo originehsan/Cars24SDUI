@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { Text, Button } from '@core/ui';
+import { runActions } from '@sdui/actions/actionHandler';
 import { colors, spacing, radius } from '@core/theme/tokens';
 
 interface Props {
@@ -9,9 +10,10 @@ interface Props {
   title: string;
   subtitle?: string;
   ctaLabel?: string;
+  actions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
 
-export function PromoBanner({ imageUrl, eyebrow, title, subtitle, ctaLabel }: Props) {
+export function PromoBanner({ imageUrl, eyebrow, title, subtitle, ctaLabel, actions }: Props) {
   return (
     <View style={styles.container}>
       {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.image} /> : null}
@@ -31,7 +33,7 @@ export function PromoBanner({ imageUrl, eyebrow, title, subtitle, ctaLabel }: Pr
           </Text>
         ) : null}
         {ctaLabel ? (
-          <Button label={ctaLabel} variant="secondary" style={styles.cta} />
+          <Button label={ctaLabel} variant="secondary" style={styles.cta} onPress={() => runActions(actions as any)} />
         ) : null}
       </View>
     </View>
@@ -47,13 +49,13 @@ const styles = StyleSheet.create({
     minHeight: 140,
   },
   image: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  opacity: 0.5,
-},
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.5,
+  },
   overlay: { padding: spacing.lg },
   eyebrow: { marginBottom: spacing.xs, fontWeight: '700' },
   subtitle: { marginTop: spacing.xs, opacity: 0.85 },

@@ -38,10 +38,26 @@
         "props": {
           "title": "Great things about this car",
           "items": [
-            { "id": "g1", "title": "No repainted parts", "description": "Original bodywork, great condition." },
-            { "id": "g2", "title": "As good as new car", "description": "2 year old car. Feels brand new." },
-            { "id": "g3", "title": "Essential features", "description": "AC, power windows, music system." },
-            { "id": "g4", "title": "180 mm ground clearance", "description": "High clearance for bumpy roads." }
+            {
+              "id": "g1",
+              "title": "No repainted parts",
+              "description": "Original bodywork, great condition."
+            },
+            {
+              "id": "g2",
+              "title": "As good as new car",
+              "description": "2 year old car. Feels brand new."
+            },
+            {
+              "id": "g3",
+              "title": "Essential features",
+              "description": "AC, power windows, music system."
+            },
+            {
+              "id": "g4",
+              "title": "180 mm ground clearance",
+              "description": "High clearance for bumpy roads."
+            }
           ]
         }
       }
@@ -55,15 +71,42 @@
           "title": "Car overview",
           "columns": 3,
           "items": [
-            { "label": "Reg. year", "value": "Feb 2024" },
-            { "label": "Fuel", "value": "Petrol" },
-            { "label": "KM driven", "value": "25,335 km" },
-            { "label": "Transmission", "value": "Manual" },
-            { "label": "Engine capacity", "value": "1197cc" },
-            { "label": "Ownership", "value": "2nd" },
-            { "label": "Make year", "value": "Nov 2023" },
-            { "label": "Spare key", "value": "No" },
-            { "label": "Reg number", "value": "MH28**2219" }
+            {
+              "label": "Reg. year",
+              "value": "Feb 2024"
+            },
+            {
+              "label": "Fuel",
+              "value": "Petrol"
+            },
+            {
+              "label": "KM driven",
+              "value": "25,335 km"
+            },
+            {
+              "label": "Transmission",
+              "value": "Manual"
+            },
+            {
+              "label": "Engine capacity",
+              "value": "1197cc"
+            },
+            {
+              "label": "Ownership",
+              "value": "2nd"
+            },
+            {
+              "label": "Make year",
+              "value": "Nov 2023"
+            },
+            {
+              "label": "Spare key",
+              "value": "No"
+            },
+            {
+              "label": "Reg number",
+              "value": "MH28**2219"
+            }
           ]
         }
       }
@@ -77,10 +120,22 @@
           "title": "Car inspection report",
           "columns": 4,
           "items": [
-            { "id": "i1", "label": "No accident history" },
-            { "id": "i2", "label": "No odometer tampering" },
-            { "id": "i3", "label": "No water damages" },
-            { "id": "i4", "label": "300-quality checks" }
+            {
+              "id": "i1",
+              "label": "No accident history"
+            },
+            {
+              "id": "i2",
+              "label": "No odometer tampering"
+            },
+            {
+              "id": "i3",
+              "label": "No water damages"
+            },
+            {
+              "id": "i4",
+              "label": "300-quality checks"
+            }
           ]
         }
       }
@@ -110,21 +165,42 @@
               "id": "features",
               "label": "Features",
               "items": [
-                { "label": "Sunroof/Moonroof" },
-                { "label": "Steering Mounted Controls" },
-                { "label": "Bluetooth Compatibility" },
-                { "label": "Airbags" },
-                { "label": "TPMS - Tyre Pressure Monitoring" },
-                { "label": "ABS - Anti-lock Braking System" }
+                {
+                  "label": "Sunroof/Moonroof"
+                },
+                {
+                  "label": "Steering Mounted Controls"
+                },
+                {
+                  "label": "Bluetooth Compatibility"
+                },
+                {
+                  "label": "Airbags"
+                },
+                {
+                  "label": "TPMS - Tyre Pressure Monitoring"
+                },
+                {
+                  "label": "ABS - Anti-lock Braking System"
+                }
               ]
             },
             {
               "id": "specifications",
               "label": "Specifications",
               "items": [
-                { "label": "Engine", "value": "1197cc" },
-                { "label": "Mileage", "value": "18 km/l" },
-                { "label": "Seating capacity", "value": "5" }
+                {
+                  "label": "Engine",
+                  "value": "1197cc"
+                },
+                {
+                  "label": "Mileage",
+                  "value": "18 km/l"
+                },
+                {
+                  "label": "Seating capacity",
+                  "value": "5"
+                }
               ]
             }
           ]
@@ -139,8 +215,16 @@
         "props": {
           "title": "Why choose Cars24?",
           "items": [
-            { "id": "w1", "title": "30-day return", "description": "Buy it. Drive it. Return if it's not right for you" },
-            { "id": "w2", "title": "Lifetime Warranty Upgrade", "description": "All cars come with a 13-month warranty — upgrade to get lifetime coverage." }
+            {
+              "id": "w1",
+              "title": "30-day return",
+              "description": "Buy it. Drive it. Return if it's not right for you"
+            },
+            {
+              "id": "w2",
+              "title": "Lifetime Warranty Upgrade",
+              "description": "All cars come with a 13-month warranty — upgrade to get lifetime coverage."
+            }
           ]
         }
       }
@@ -153,8 +237,32 @@
         "props": {
           "principal": 660000,
           "interestRatePercent": 12,
-          "downPayment": { "min": 0, "max": 528000, "default": 0 },
-          "durationMonths": { "min": 12, "max": 84, "default": 84 }
+          "downPayment": {
+            "min": 0,
+            "max": 528000,
+            "default": 0
+          },
+          "durationMonths": {
+            "min": 12,
+            "max": 84,
+            "default": 84
+          },
+          "eligibilityActions": [
+            {
+              "type": "track",
+              "target": "check_eligibility_tapped",
+              "params": {
+                "screen": "car_detail"
+              }
+            },
+            {
+              "type": "navigate",
+              "target": "car_detail",
+              "params": {
+                "action": "eligibility_check"
+              }
+            }
+          ]
         }
       }
     },
@@ -200,10 +308,26 @@
         "props": {
           "title": "Explore more options",
           "items": [
-            { "id": "l1", "eyebrow": "By Model", "label": "Used Mahindra XUV300 Cars in Mumbai" },
-            { "id": "l2", "eyebrow": "By Brand", "label": "Used Mahindra Cars in Mumbai" },
-            { "id": "l3", "eyebrow": "By Budget", "label": "Used Cars under 7 Lakhs in Mumbai" },
-            { "id": "l4", "eyebrow": "By Body Type", "label": "Used SUV Cars in Mumbai" }
+            {
+              "id": "l1",
+              "eyebrow": "By Model",
+              "label": "Used Mahindra XUV300 Cars in Mumbai"
+            },
+            {
+              "id": "l2",
+              "eyebrow": "By Brand",
+              "label": "Used Mahindra Cars in Mumbai"
+            },
+            {
+              "id": "l3",
+              "eyebrow": "By Budget",
+              "label": "Used Cars under 7 Lakhs in Mumbai"
+            },
+            {
+              "id": "l4",
+              "eyebrow": "By Body Type",
+              "label": "Used SUV Cars in Mumbai"
+            }
           ]
         }
       }

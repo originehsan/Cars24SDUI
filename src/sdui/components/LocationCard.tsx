@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { Text, Button, Card } from '@core/ui';
+import { runActions } from '@sdui/actions/actionHandler';
 import { colors, spacing, radius } from '@core/theme/tokens';
 
 interface Props {
@@ -9,9 +10,10 @@ interface Props {
   address: string;
   distanceLabel?: string;
   statusLabel?: string;
+  primaryActions?: { type: string; target?: string; params?: Record<string, unknown> }[];
+  secondaryActions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
-
-export function LocationCard({ imageUrl, name, address, distanceLabel, statusLabel }: Props) {
+export function LocationCard({ imageUrl, name, address, distanceLabel, statusLabel, primaryActions, secondaryActions }: Props) {
   const isClosed = statusLabel?.toLowerCase().includes('closed');
 
   return (
@@ -35,8 +37,8 @@ export function LocationCard({ imageUrl, name, address, distanceLabel, statusLab
         ) : null}
 
         <View style={styles.buttonsRow}>
-          <Button label="Call us" variant="secondary" style={styles.button} />
-          <Button label="View showroom" variant="primary" style={styles.button} />
+          <Button label="Call us" variant="secondary" style={styles.button} onPress={() => runActions(secondaryActions as any)} />
+          <Button label="View showroom" variant="primary" style={styles.button} onPress={() => runActions(primaryActions as any)} />
         </View>
       </Card>
     </View>

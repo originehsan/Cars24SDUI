@@ -2,11 +2,13 @@ import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
+import { runActions } from '@sdui/actions/actionHandler';
 
 interface Item {
   id: string;
   eyebrow?: string;
   label: string;
+  actions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
 
 interface Props {
@@ -24,7 +26,7 @@ export function LinkList({ title, items }: Props) {
       ) : null}
 
       {items.map((item) => (
-        <Pressable key={item.id} style={styles.row}>
+        <Pressable key={item.id} style={styles.row} onPress={() => runActions(item.actions as any)}>
           <View style={styles.textCol}>
             {item.eyebrow ? (
               <Text variant="caption" color="textMuted">

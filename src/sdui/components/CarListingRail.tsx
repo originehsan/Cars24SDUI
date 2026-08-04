@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, ScrollView, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
+import { runActions } from '@sdui/actions/actionHandler';
 
 interface Tab {
   id: string;
@@ -19,6 +20,7 @@ interface CarCard {
   fuel?: string;
   transmission?: string;
   badge?: string;
+  actions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
 
 interface Props {
@@ -58,7 +60,7 @@ export function CarListingRail({ title, tabs, selectedTabId, cars }: Props) {
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {cars.map((car) => (
-          <Pressable key={car.id} style={styles.card}>
+          <Pressable key={car.id} style={styles.card} onPress={() => runActions(car.actions as any)}>
             <View>
               <Image source={{ uri: car.imageUrl }} style={styles.image} />
               {car.badge ? (
