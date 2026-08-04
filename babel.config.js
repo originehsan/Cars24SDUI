@@ -12,6 +12,7 @@ module.exports = {
           '@sdui': './src/sdui',
           '@screens': './src/screens',
           '@navigation': './src/navigation',
+          '@static-screen': './src/static-screen',
         },
       },
     ],

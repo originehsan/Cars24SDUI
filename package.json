@@ -63,7 +63,8 @@
       "^@core/(.*)$": "<rootDir>/src/core/$1",
       "^@sdui/(.*)$": "<rootDir>/src/sdui/$1",
       "^@screens/(.*)$": "<rootDir>/src/screens/$1",
-      "^@navigation/(.*)$": "<rootDir>/src/navigation/$1"
+      "^@navigation/(.*)$": "<rootDir>/src/navigation/$1",
+      "^@static-screen/(.*)$": "<rootDir>/src/static-screen/$1"
     }
   }
 }
