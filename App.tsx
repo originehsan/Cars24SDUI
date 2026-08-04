@@ -6,7 +6,8 @@
  * @format
  */
 
-import { StatusBar, StyleSheet, useColorScheme, View, ActivityIndicator, Text } from 'react-native';
+import { useState } from 'react';
+import { StatusBar, StyleSheet, useColorScheme, View, ActivityIndicator, Text, Pressable } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -34,8 +35,11 @@ function App() {
 
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
-  // Temporary: renders "home" directly, no navigation screen wrapper yet.
-  const { data, isLoading, error } = useSduiScreen('home');
+  // TEMPORARY test scaffolding — no real navigation yet. Toggle between
+  // mock screens here to verify each renders correctly. Remove once
+  // navigation/ is built.
+  const [screenName, setScreenName] = useState<'home' | 'car_detail'>('home');
+  const { data, isLoading, error } = useSduiScreen(screenName);
 
   if (isLoading) {
     return (
@@ -55,6 +59,14 @@ function AppContent() {
 
   return (
     <View style={[styles.container, { paddingTop: safeAreaInsets.top }]}>
+      <View style={styles.devToggle}>
+        <Pressable onPress={() => setScreenName('home')}>
+          <Text>Home</Text>
+        </Pressable>
+        <Pressable onPress={() => setScreenName('car_detail')}>
+          <Text>Car Detail</Text>
+        </Pressable>
+      </View>
       <SDUIScreen raw={data} />
     </View>
   );
@@ -72,6 +84,7 @@ function AppCrashFallback() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  devToggle: { flexDirection: 'row', justifyContent: 'space-around', padding: 8, backgroundColor: '#eee' },
 });
 
 export default App;
