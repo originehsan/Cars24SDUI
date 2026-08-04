@@ -2,9 +2,11 @@ import { USE_MOCK_SERVER, MOCK_SERVER_DELAY_MS } from '@core/constants/config';
 import { ScreenShellSchema } from '@sdui/schema/types';
 import homeJson from '@sdui/mock-server/home.json';
 
-// New screen? Add one line here — nothing else changes.
+import carDetailJson from '@sdui/mock-server/car_detail.json';
+
 const MOCK_SCREENS: Record<string, unknown> = {
   home: homeJson,
+  car_detail: carDetailJson,
 };
 
 /**

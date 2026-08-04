@@ -1,0 +1,212 @@
+{
+  "schemaVersion": "1.0.0",
+  "screenName": "car_detail",
+  "sections": [
+    {
+      "id": "sec-gallery",
+      "component": {
+        "type": "image_gallery",
+        "id": "gallery-1",
+        "props": {
+          "images": [
+            "https://picsum.photos/seed/xuv1/800/600",
+            "https://picsum.photos/seed/xuv2/800/600",
+            "https://picsum.photos/seed/xuv3/800/600"
+          ],
+          "badgeText": "Cars24 Owned stock",
+          "overlayText": "25,335 km · Petrol · Manual · 2nd Owner · MH-28"
+        }
+      }
+    },
+    {
+      "id": "sec-info",
+      "component": {
+        "type": "location_card",
+        "id": "info-1",
+        "props": {
+          "name": "2023 Mahindra XUV300 W6 1.2 PETROL",
+          "address": "Korum Mall, Thane West",
+          "distanceLabel": "1149.8 km away"
+        }
+      }
+    },
+    {
+      "id": "sec-great-things",
+      "component": {
+        "type": "feature_list",
+        "id": "great-1",
+        "props": {
+          "title": "Great things about this car",
+          "items": [
+            { "id": "g1", "title": "No repainted parts", "description": "Original bodywork, great condition." },
+            { "id": "g2", "title": "As good as new car", "description": "2 year old car. Feels brand new." },
+            { "id": "g3", "title": "Essential features", "description": "AC, power windows, music system." },
+            { "id": "g4", "title": "180 mm ground clearance", "description": "High clearance for bumpy roads." }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-overview",
+      "component": {
+        "type": "spec_grid",
+        "id": "overview-1",
+        "props": {
+          "title": "Car overview",
+          "columns": 3,
+          "items": [
+            { "label": "Reg. year", "value": "Feb 2024" },
+            { "label": "Fuel", "value": "Petrol" },
+            { "label": "KM driven", "value": "25,335 km" },
+            { "label": "Transmission", "value": "Manual" },
+            { "label": "Engine capacity", "value": "1197cc" },
+            { "label": "Ownership", "value": "2nd" },
+            { "label": "Make year", "value": "Nov 2023" },
+            { "label": "Spare key", "value": "No" },
+            { "label": "Reg number", "value": "MH28**2219" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-inspection",
+      "component": {
+        "type": "icon_link_grid",
+        "id": "inspection-1",
+        "props": {
+          "title": "Car inspection report",
+          "columns": 4,
+          "items": [
+            { "id": "i1", "label": "No accident history" },
+            { "id": "i2", "label": "No odometer tampering" },
+            { "id": "i3", "label": "No water damages" },
+            { "id": "i4", "label": "300-quality checks" }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-return-banner",
+      "component": {
+        "type": "promo_banner",
+        "id": "banner-1",
+        "props": {
+          "eyebrow": "India's first and only",
+          "title": "30 day return guarantee",
+          "subtitle": "Best quality, guaranteed",
+          "imageUrl": "https://picsum.photos/seed/returnpolicy/800/300"
+        }
+      }
+    },
+    {
+      "id": "sec-features-specs",
+      "component": {
+        "type": "tabbed_content",
+        "id": "featurespecs-1",
+        "props": {
+          "defaultTabId": "features",
+          "tabs": [
+            {
+              "id": "features",
+              "label": "Features",
+              "items": [
+                { "label": "Sunroof/Moonroof" },
+                { "label": "Steering Mounted Controls" },
+                { "label": "Bluetooth Compatibility" },
+                { "label": "Airbags" },
+                { "label": "TPMS - Tyre Pressure Monitoring" },
+                { "label": "ABS - Anti-lock Braking System" }
+              ]
+            },
+            {
+              "id": "specifications",
+              "label": "Specifications",
+              "items": [
+                { "label": "Engine", "value": "1197cc" },
+                { "label": "Mileage", "value": "18 km/l" },
+                { "label": "Seating capacity", "value": "5" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-why-cars24",
+      "component": {
+        "type": "feature_list",
+        "id": "whycars24-1",
+        "props": {
+          "title": "Why choose Cars24?",
+          "items": [
+            { "id": "w1", "title": "30-day return", "description": "Buy it. Drive it. Return if it's not right for you" },
+            { "id": "w2", "title": "Lifetime Warranty Upgrade", "description": "All cars come with a 13-month warranty — upgrade to get lifetime coverage." }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-emi",
+      "component": {
+        "type": "emi_calculator",
+        "id": "emi-1",
+        "props": {
+          "principal": 660000,
+          "interestRatePercent": 12,
+          "downPayment": { "min": 0, "max": 528000, "default": 0 },
+          "durationMonths": { "min": 12, "max": 84, "default": 84 }
+        }
+      }
+    },
+    {
+      "id": "sec-similar-cars",
+      "component": {
+        "type": "car_listing_rail",
+        "id": "similar-1",
+        "props": {
+          "title": "Explore cars similar to Mahindra XUV300",
+          "cars": [
+            {
+              "id": "sim1",
+              "title": "2022 Mahindra XUV300",
+              "variant": "W8 (O) 1.2",
+              "imageUrl": "https://picsum.photos/seed/xuv300b/300/200",
+              "price": "₹5.81 lakh",
+              "emi": "EMI ₹10,258/m*",
+              "km": "80,718 km",
+              "fuel": "Petrol",
+              "transmission": "Auto",
+              "badge": "Cars24 Owned stock"
+            },
+            {
+              "id": "sim2",
+              "title": "2019 Mahindra XUV300",
+              "imageUrl": "https://picsum.photos/seed/xuv300c/300/200",
+              "price": "₹5.20 lakh",
+              "emi": "EMI ₹11,670/m*",
+              "km": "47,935 km",
+              "fuel": "Diesel",
+              "badge": "Cars24 Owned"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sec-explore-more",
+      "component": {
+        "type": "link_list",
+        "id": "explore-1",
+        "props": {
+          "title": "Explore more options",
+          "items": [
+            { "id": "l1", "eyebrow": "By Model", "label": "Used Mahindra XUV300 Cars in Mumbai" },
+            { "id": "l2", "eyebrow": "By Brand", "label": "Used Mahindra Cars in Mumbai" },
+            { "id": "l3", "eyebrow": "By Budget", "label": "Used Cars under 7 Lakhs in Mumbai" },
+            { "id": "l4", "eyebrow": "By Body Type", "label": "Used SUV Cars in Mumbai" }
+          ]
+        }
+      }
+    }
+  ]
+}
