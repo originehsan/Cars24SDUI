@@ -165,6 +165,7 @@ const EmiCalculatorProps = z.object({
     downPayment: z.object({ min: z.number(), max: z.number(), default: z.number() }),
     durationMonths: z.object({ min: z.number(), max: z.number(), default: z.number() }),
     eligibilityActions: ActionsSchema,
+    tenureChangeActions: ActionsSchema,
 });
 
 const TextBlockProps = z.object({

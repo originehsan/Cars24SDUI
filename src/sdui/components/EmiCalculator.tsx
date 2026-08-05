@@ -19,9 +19,9 @@ interface Props {
   downPayment: RangeConfig;
   durationMonths: RangeConfig;
   eligibilityActions?: { type: string; target?: string; params?: Record<string, unknown> }[];
+  tenureChangeActions?: { type: string; target?: string; params?: Record<string, unknown> }[];
 }
-
-export function EmiCalculator({ principal, interestRatePercent, downPayment, durationMonths, eligibilityActions }: Props) {
+export function EmiCalculator({ principal, interestRatePercent, downPayment, durationMonths, eligibilityActions, tenureChangeActions }: Props) {
   const openEligibilitySheet = useSheetStore((s) => s.openEligibilitySheet);
   const [downPaymentValue, setDownPaymentValue] = useState(downPayment.default);
   const [duration, setDuration] = useState(durationMonths.default);
@@ -58,6 +58,11 @@ export function EmiCalculator({ principal, interestRatePercent, downPayment, dur
           value={downPaymentValue}
           step={1000}
           onValueChange={setDownPaymentValue}
+          onSlidingComplete={(value) =>
+            runActions(
+              tenureChangeActions?.map((a) => ({ ...a, params: { ...a.params, field: 'downPayment', value } })) as any,
+            )
+          }
           minimumTrackTintColor={colors.primary}
           maximumTrackTintColor={colors.border}
         />
@@ -82,6 +87,11 @@ export function EmiCalculator({ principal, interestRatePercent, downPayment, dur
           value={duration}
           step={1}
           onValueChange={setDuration}
+          onSlidingComplete={(value) =>
+            runActions(
+              tenureChangeActions?.map((a) => ({ ...a, params: { ...a.params, field: 'duration', value } })) as any,
+            )
+          }
           minimumTrackTintColor={colors.primary}
           maximumTrackTintColor={colors.border}
         />

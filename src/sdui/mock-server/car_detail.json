@@ -262,6 +262,15 @@
                 "action": "eligibility_check"
               }
             }
+          ],
+          "tenureChangeActions": [
+            {
+              "type": "track",
+              "target": "emi_tenure_changed",
+              "params": {
+                "screen": "car_detail"
+              }
+            }
           ]
         }
       }
