@@ -157,6 +157,12 @@ export function StaticHomeScreen() {
                     better drives, better lives — Made with love in Gurugram
                 </Text>
             </View>
+
+            {/* Spacer to allow sustained scroll testing (see PERF.md) — this
+          content is intentionally minimal (home screen has ~5 sections)
+          and matched by an equal-height section in home.json for the
+          SDUI version, so both stay comparable. */}
+            <View style={styles.scrollPadding} />
         </ScrollView>
     );
 }
@@ -235,6 +241,7 @@ const styles = StyleSheet.create({
     },
     carDetails: { padding: spacing.sm },
     price: { marginTop: spacing.xs },
-    footer: { backgroundColor: '#060B14', padding: spacing.lg },
-    footerText: { textAlign: 'center' },
+   footer: { backgroundColor: '#060B14', padding: spacing.lg },
+  footerText: { textAlign: 'center' },
+  scrollPadding: { height: 400 },
 });

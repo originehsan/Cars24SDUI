@@ -171,6 +171,7 @@ const EmiCalculatorProps = z.object({
 const TextBlockProps = z.object({
     text: z.string(),
     align: z.enum(['left', 'center', 'right']).default('left'),
+    minHeight: z.number().optional(),
 });
 
 const LinkListProps = z.object({
@@ -261,14 +262,14 @@ export const ScreenShellSchema = z.object({
 // Used to tell "genuinely unknown type" (show fallback) apart from
 // "known type, malformed props" (drop that node quietly).
 export const SectionShellSchema = z.object({
-  id: z.string(),
-  minVersion: z.string().optional(),
-  visible: z.boolean().default(true),
-  style: StyleSchema,
-  accessibility: AccessibilitySchema.optional(),
-  component: z.object({
-    type: z.string(),
     id: z.string(),
-    props: z.unknown(),
-  }),
+    minVersion: z.string().optional(),
+    visible: z.boolean().default(true),
+    style: StyleSchema,
+    accessibility: AccessibilitySchema.optional(),
+    component: z.object({
+        type: z.string(),
+        id: z.string(),
+        props: z.unknown(),
+    }),
 });

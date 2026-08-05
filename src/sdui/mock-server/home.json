@@ -12,10 +12,22 @@
           "location": "Ghaziabad",
           "placeholder": "Search used cars",
           "tabs": [
-            { "id": "all", "label": "All" },
-            { "id": "buy", "label": "Buy used car" },
-            { "id": "sell", "label": "Sell car" },
-            { "id": "loans", "label": "Loans" }
+            {
+              "id": "all",
+              "label": "All"
+            },
+            {
+              "id": "buy",
+              "label": "Buy used car"
+            },
+            {
+              "id": "sell",
+              "label": "Sell car"
+            },
+            {
+              "id": "loans",
+              "label": "Loans"
+            }
           ]
         }
       }
@@ -30,9 +42,21 @@
           "title": "Buy car",
           "badgeText": "Up to ₹80,000 off",
           "cards": [
-            { "id": "c1", "title": "All used cars", "imageUrl": "https://picsum.photos/seed/allcars/300/200" },
-            { "id": "c2", "title": "Budget used cars", "imageUrl": "https://picsum.photos/seed/budget/300/200" },
-            { "id": "c3", "title": "Premium used cars", "imageUrl": "https://picsum.photos/seed/premium/300/200" }
+            {
+              "id": "c1",
+              "title": "All used cars",
+              "imageUrl": "https://picsum.photos/seed/allcars/300/200"
+            },
+            {
+              "id": "c2",
+              "title": "Budget used cars",
+              "imageUrl": "https://picsum.photos/seed/budget/300/200"
+            },
+            {
+              "id": "c3",
+              "title": "Premium used cars",
+              "imageUrl": "https://picsum.photos/seed/premium/300/200"
+            }
           ]
         }
       }
@@ -46,8 +70,14 @@
         "props": {
           "title": "Used cars you'll love",
           "tabs": [
-            { "id": "wishlisted", "label": "Wishlisted" },
-            { "id": "hotdeals", "label": "Hot deals" }
+            {
+              "id": "wishlisted",
+              "label": "Wishlisted"
+            },
+            {
+              "id": "hotdeals",
+              "label": "Hot deals"
+            }
           ],
           "selectedTabId": "wishlisted",
           "cars": [
@@ -62,7 +92,15 @@
               "fuel": "Petrol",
               "transmission": "Manual",
               "badge": "Cars24 Owned stock",
-              "actions": [{ "type": "navigate", "target": "car_detail", "params": { "carId": "car1" } }]
+              "actions": [
+                {
+                  "type": "navigate",
+                  "target": "car_detail",
+                  "params": {
+                    "carId": "car1"
+                  }
+                }
+              ]
             },
             {
               "id": "car2",
@@ -74,7 +112,15 @@
               "fuel": "Diesel",
               "transmission": "Manual",
               "badge": "Verified Direct seller",
-              "actions": [{ "type": "navigate", "target": "car_detail", "params": { "carId": "car2" } }]
+              "actions": [
+                {
+                  "type": "navigate",
+                  "target": "car_detail",
+                  "params": {
+                    "carId": "car2"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -92,11 +138,29 @@
     {
       "id": "sec-footer",
       "visible": true,
-      "style": { "backgroundColor": "#060B14", "textColor": "#FFFFFF" },
+      "style": {
+        "backgroundColor": "#060B14",
+        "textColor": "#FFFFFF"
+      },
       "component": {
         "type": "text_block",
         "id": "footer-1",
-        "props": { "text": "better drives, better lives — Made with love in Gurugram", "align": "center" }
+        "props": {
+          "text": "better drives, better lives — Made with love in Gurugram",
+          "align": "center"
+        }
+      }
+    },
+    {
+      "id": "sec-scroll-padding",
+      "visible": true,
+      "component": {
+        "type": "text_block",
+        "id": "padding-1",
+        "props": {
+          "text": "",
+          "minHeight": 400
+        }
       }
     }
   ]
