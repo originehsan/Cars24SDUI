@@ -119,6 +119,7 @@ const LocationCardProps = z.object({
 
 const FeatureListProps = z.object({
     title: z.string().optional(),
+    accentColor: z.enum(['orange', 'purple']).optional(),
     items: z.array(
         z.object({
             id: z.string(),

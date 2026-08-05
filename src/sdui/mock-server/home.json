@@ -45,17 +45,17 @@
             {
               "id": "c1",
               "title": "All used cars",
-              "imageUrl": "https://picsum.photos/seed/allcars/300/200"
+              "imageUrl": "xuv300-front"
             },
             {
               "id": "c2",
               "title": "Budget used cars",
-              "imageUrl": "https://picsum.photos/seed/budget/300/200"
+              "imageUrl": "vento-front"
             },
             {
               "id": "c3",
               "title": "Premium used cars",
-              "imageUrl": "https://picsum.photos/seed/premium/300/200"
+              "imageUrl": "xuv300-side"
             }
           ]
         }
@@ -85,7 +85,7 @@
               "id": "car1",
               "title": "2023 Mahindra XUV300",
               "variant": "W6 1.2 PETROL",
-              "imageUrl": "https://picsum.photos/seed/xuv300/300/200",
+              "imageUrl": "xuv300-front",
               "price": "₹6.60 lakh",
               "emi": "EMI ₹11,651/m*",
               "km": "25,335 km",
@@ -106,7 +106,7 @@
               "id": "car2",
               "title": "2012 Volkswagen Vento",
               "variant": "HIGHLINE DIESEL 1.6",
-              "imageUrl": "https://picsum.photos/seed/vento/300/200",
+              "imageUrl": "vento-front",
               "price": "₹1.72 lakh",
               "km": "78,002 km",
               "fuel": "Diesel",

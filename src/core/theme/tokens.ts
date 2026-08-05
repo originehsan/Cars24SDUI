@@ -4,13 +4,20 @@
 
 export const colors = {
   // Brand
-  primary: '#3D34C4',      // header bar, primary buttons, links
-  primaryDark: '#2A2389',  // pressed states
-  accent: '#F58020',       // CTA buttons (Book now, Free test drive)
-  accentLight: '#FCEBDD',  // CTA secondary background
+  primary: '#4B3FE0',          // header bar, active tabs, primary badges
+  primaryDark: '#372DB0',      // pressed states
+  accent: '#F5820B',           // CTA buttons (Book now, Free test drive)
+  accentLight: '#FFE8D6',      // CTA secondary background
+  accentSecondary: '#7C3AED',  // purple accent — second feature_list variant
+  accentSecondaryLight: '#F3EEFF',
 
   // Semantic
-  success: '#1D9E75',      // Zero Worry badges, verified tags
+  success: '#1D9E75',          // positive-outcome banners (e.g. inspection pass)
+  successLight: '#E3F6EE',
+  info: '#1D63ED',             // trust/verification badges (Zero Worry-style)
+  infoLight: '#E8F0FE',
+  verified: '#E8590C',         // "Verified Direct seller" badge — distinct
+  verifiedLight: '#FFF1EC',    // from accent; different semantic meaning
   warning: '#F59E0B',
   error: '#EF4444',
 

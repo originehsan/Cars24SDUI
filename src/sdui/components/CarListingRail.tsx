@@ -3,7 +3,8 @@ import { View, ScrollView, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 import { runActions } from '@sdui/actions/actionHandler';
-
+import { resolveImageSource } from '@core/constants/localImages';
+import { resolveBadgeColors } from '@core/theme/badgeColors';
 interface Tab {
   id: string;
   label: string;
@@ -62,10 +63,10 @@ export function CarListingRail({ title, tabs, selectedTabId, cars }: Props) {
         {cars.map((car) => (
           <Pressable key={car.id} style={styles.card} onPress={() => runActions(car.actions as any)}>
             <View>
-              <Image source={{ uri: car.imageUrl }} style={styles.image} />
+              <Image source={resolveImageSource(car.imageUrl)} style={styles.image} resizeMode="cover" />
               {car.badge ? (
-                <View style={styles.badge}>
-                  <Text variant="caption" color="textOnPrimary">
+                <View style={[styles.badge, { backgroundColor: resolveBadgeColors(car.badge).background }]}>
+                  <Text variant="caption" style={{ color: resolveBadgeColors(car.badge).text }}>
                     {car.badge}
                   </Text>
                 </View>
@@ -84,10 +85,11 @@ export function CarListingRail({ title, tabs, selectedTabId, cars }: Props) {
 
               <View style={styles.specsRow}>
                 {[car.km, car.fuel, car.transmission].filter(Boolean).map((spec, i) => (
-                  <Text key={i} variant="caption" color="textSecondary">
-                    {spec}
-                    {i < 2 ? '  ·  ' : ''}
-                  </Text>
+                  <View key={i} style={styles.specChip}>
+                    <Text variant="caption" color="textSecondary">
+                      {spec}
+                    </Text>
+                  </View>
                 ))}
               </View>
 
@@ -134,12 +136,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: spacing.xs,
     left: spacing.xs,
-    backgroundColor: colors.primary,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
     borderRadius: radius.sm,
   },
   details: { padding: spacing.sm },
   specsRow: { flexDirection: 'row', marginVertical: spacing.xs, flexWrap: 'wrap' },
+  specChip: {
+    backgroundColor: colors.background,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+    marginRight: spacing.xs,
+    marginBottom: spacing.xs,
+  },
   price: { marginTop: spacing.xs },
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
-
+import { resolveImageSource } from '@core/constants/localImages';
 interface Card {
   id: string;
   title: string;
@@ -32,7 +32,7 @@ export function CardRail({ title, badgeText, cards }: Props) {
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {cards.map((card) => (
           <Pressable key={card.id} style={styles.card}>
-            <Image source={{ uri: card.imageUrl }} style={styles.image} />
+            <Image source={resolveImageSource(card.imageUrl)} style={styles.image} resizeMode="cover" />
             <Text variant="label" style={styles.cardTitle}>
               {card.title}
             </Text>

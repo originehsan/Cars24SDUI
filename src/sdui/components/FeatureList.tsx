@@ -13,17 +13,20 @@ interface Item {
 interface Props {
   title?: string;
   items: Item[];
+  accentColor?: 'orange' | 'purple';
 }
 
-export function FeatureList({ title, items }: Props) {
+export function FeatureList({ title, items, accentColor }: Props) {
+  const borderColor =
+    accentColor === 'orange' ? colors.accent : accentColor === 'purple' ? colors.accentSecondary : colors.border;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { borderColor }]}>
       {title ? (
         <Text variant="h3" style={styles.header}>
           {title}
         </Text>
       ) : null}
-
       {items.map((item) => (
         <View key={item.id} style={styles.row}>
           {item.iconUrl ? (
@@ -46,7 +49,12 @@ export function FeatureList({ title, items }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: spacing.lg },
+  container: {
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderRadius: radius.lg,
+    margin: spacing.md,
+  },
   header: { marginBottom: spacing.md },
   row: { flexDirection: 'row', marginBottom: spacing.lg, alignItems: 'flex-start' },
   icon: { width: 40, height: 40, marginRight: spacing.md, borderRadius: radius.pill },

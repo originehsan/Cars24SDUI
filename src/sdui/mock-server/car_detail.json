@@ -9,9 +9,9 @@
         "id": "gallery-1",
         "props": {
           "images": [
-            "https://picsum.photos/seed/xuv1/800/600",
-            "https://picsum.photos/seed/xuv2/800/600",
-            "https://picsum.photos/seed/xuv3/800/600"
+            "xuv300-front",
+            "xuv300-side",
+            "xuv300-rear"
           ],
           "badgeText": "Cars24 Owned stock",
           "overlayText": "25,335 km · Petrol · Manual · 2nd Owner · MH-28"
@@ -37,6 +37,7 @@
         "id": "great-1",
         "props": {
           "title": "Great things about this car",
+          "accentColor": "orange",
           "items": [
             {
               "id": "g1",
@@ -214,6 +215,7 @@
         "id": "whycars24-1",
         "props": {
           "title": "Why choose Cars24?",
+          "accentColor": "purple",
           "items": [
             {
               "id": "w1",
@@ -287,7 +289,7 @@
               "id": "sim1",
               "title": "2022 Mahindra XUV300",
               "variant": "W8 (O) 1.2",
-              "imageUrl": "https://picsum.photos/seed/xuv300b/300/200",
+              "imageUrl": "xuv300-side",
               "price": "₹5.81 lakh",
               "emi": "EMI ₹10,258/m*",
               "km": "80,718 km",
@@ -298,7 +300,7 @@
             {
               "id": "sim2",
               "title": "2019 Mahindra XUV300",
-              "imageUrl": "https://picsum.photos/seed/xuv300c/300/200",
+              "imageUrl": "xuv300-rear",
               "price": "₹5.20 lakh",
               "emi": "EMI ₹11,670/m*",
               "km": "47,935 km",
@@ -306,6 +308,22 @@
               "badge": "Cars24 Owned"
             }
           ]
+        }
+      }
+    },
+    {
+      "id": "sec-value-prop",
+      "visible": true,
+      "style": {
+        "backgroundColor": "#F3EEFF",
+        "textColor": "#7C3AED"
+      },
+      "component": {
+        "type": "text_block",
+        "id": "value-prop-1",
+        "props": {
+          "text": "Eligible for lifetime warranty",
+          "align": "center"
         }
       }
     },

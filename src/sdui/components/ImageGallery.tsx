@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Image, ScrollView, NativeSyntheticEvent, NativeScrollEvent, Dimensions, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
+import { resolveImageSource } from '@core/constants/localImages';
 
 interface Props {
   images: string[];
@@ -29,7 +30,7 @@ export function ImageGallery({ images, badgeText, overlayText }: Props) {
         scrollEventThrottle={16}
       >
         {images.map((uri, i) => (
-          <Image key={i} source={{ uri }} style={styles.image} />
+          <Image key={i} source={resolveImageSource(uri)} style={styles.image} resizeMode="cover" />
         ))}
       </ScrollView>
 
