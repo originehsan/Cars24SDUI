@@ -1,0 +1,15 @@
+diff --git a/node_modules/react-native-nitro-modules/android/build.gradle b/node_modules/react-native-nitro-modules/android/build.gradle
+index f564aad..8285407 100644
+--- a/node_modules/react-native-nitro-modules/android/build.gradle
++++ b/node_modules/react-native-nitro-modules/android/build.gradle
+@@ -51,8 +51,8 @@ android {
+ 
+     externalNativeBuild {
+       cmake {
+-        cppFlags "-frtti -fexceptions -Wall -Wextra -fstack-protector-all"
+-        arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON", "-DNITRO_SANITIZER=${rootProject.findProperty('nitroSanitizer') ?: ''}"
++        cppFlags "-frtti -fexceptions -Wall -Wextra -fstack-protector-all -stdlib=libc++"
++        arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON", "-DNITRO_SANITIZER=${rootProject.findProperty('nitroSanitizer') ?: ''}", "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+         abiFilters (*reactNativeArchitectures())
+ 
+         buildTypes {

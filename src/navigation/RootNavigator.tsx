@@ -28,7 +28,7 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer ref={navRef}>
-      <Stack.Navigator initialRouteName="home">
+     <Stack.Navigator initialRouteName="home">
         <Stack.Screen name="home" component={HomeScreen} options={{ title: 'Cars24' }} />
         <Stack.Screen name="car_detail" component={CarDetailScreen} options={{ title: 'Car Detail' }} />
         <Stack.Screen name="static_home" component={StaticHomeScreen} options={{ title: 'Static (Benchmark)' }} />

@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-native-worklets/android/build.gradle.kts b/node_modules/react-native-worklets/android/build.gradle.kts
+index e326d97..d498e62 100644
+--- a/node_modules/react-native-worklets/android/build.gradle.kts
++++ b/node_modules/react-native-worklets/android/build.gradle.kts
+@@ -207,7 +207,8 @@ android {
+                     "-DWORKLETS_VERSION=$WORKLETS_VERSION",
+                     "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON",
+                     "-DWORKLETS_FEATURE_FLAGS=$WORKLETS_FEATURE_FLAGS",
+-                    "-DHERMES_V1_ENABLED=$HERMES_V1_ENABLED"
++                    "-DHERMES_V1_ENABLED=$HERMES_V1_ENABLED",
++                    "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+                 )
+                 abiFilters.addAll(reactNativeArchitectures())
+                 targets("worklets")

@@ -1,0 +1,150 @@
+diff --git a/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp b/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp
+index 7b0a10b..bb6c799 100644
+--- a/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp
++++ b/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp
+@@ -148,52 +148,7 @@ template TransformMatrix3D TransformOperationInterpolator<MatrixOperation>::inte
+     const TransformMatrix::Shared &,
+     const TransformMatrix::Shared &) const;
+ 
+-// Specialization for resolvable operations
+-template <ResolvableOp TOperation>
+-TransformOperationInterpolator<TOperation>::TransformOperationInterpolator(
+-    const std::shared_ptr<TOperation> &defaultOperation,
+-    ResolvableValueInterpolatorConfig config)
+-    : StyleOperationInterpolator(defaultOperation), config_(std::move(config)) {}
+-
+-template <ResolvableOp TOperation>
+-std::unique_ptr<StyleOperation> TransformOperationInterpolator<TOperation>::interpolate(
+-    double progress,
+-    const std::shared_ptr<StyleOperation> &from,
+-    const std::shared_ptr<StyleOperation> &to,
+-    const StyleOperationsInterpolationContext &context) const {
+-  const auto &fromOp = *std::static_pointer_cast<TOperation>(from);
+-  const auto &toOp = *std::static_pointer_cast<TOperation>(to);
+-
+-  return std::make_unique<TOperation>(
+-      fromOp.value.interpolate(progress, toOp.value, getResolvableValueContext(context)));
+-}
+ 
+-template <ResolvableOp TOperation>
+-std::shared_ptr<StyleOperation> TransformOperationInterpolator<TOperation>::resolveOperation(
+-    const std::shared_ptr<StyleOperation> &operation,
+-    const StyleOperationsInterpolationContext &context) const {
+-  const auto &resolvableOp = std::static_pointer_cast<TOperation>(operation);
+-  const auto &resolved = resolvableOp->value.resolve(getResolvableValueContext(context));
+-
+-  if (!resolved.has_value()) {
+-    throw std::invalid_argument(
+-        "[Reanimated] Cannot resolve resolvable operation: " + operation->getOperationName() +
+-        " for node with tag: " + std::to_string(context.node->getTag()));
+-  }
+-
+-  return std::make_shared<TOperation>(resolved.value());
+-}
+-
+-template <ResolvableOp TOperation>
+-ResolvableValueInterpolationContext TransformOperationInterpolator<TOperation>::getResolvableValueContext(
+-    const StyleOperationsInterpolationContext &context) const {
+-  return ResolvableValueInterpolationContext{
+-      .node = context.node,
+-      .fallbackInterpolateThreshold = context.fallbackInterpolateThreshold,
+-      .viewStylesRepository = context.viewStylesRepository,
+-      .relativeProperty = config_.relativeProperty,
+-      .relativeTo = config_.relativeTo};
+-}
+ 
+ // Rotate operations
+ template class TransformOperationInterpolator<RotateOperation>;
+diff --git a/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.h b/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.h
+index f771438..a5f9f03 100644
+--- a/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.h
++++ b/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.h
+@@ -6,6 +6,9 @@
+ #include <reanimated/CSS/interpolation/transforms/operations/perspective.h>
+ 
+ #include <memory>
++#include <stdexcept>
++#include <string>
++#include <utility>
+ 
+ namespace reanimated::css {
+ 
+@@ -58,29 +61,59 @@ class TransformOperationInterpolator<MatrixOperation> : public StyleOperationInt
+       const StyleOperationsInterpolationContext &context) const;
+ };
+ 
+-// Specialization for resolvable operations
++// Specialization for resolvable operations.
++// NOTE: All method bodies are defined inline here (not out-of-line in the .cpp)
++// to work around a Clang 17 (NDK 26) bug where out-of-line definitions of
++// constrained partial template specializations fail with:
++//   "type constraint differs in template redeclaration"
++// This bug is fixed in Clang 18 (NDK 27+). Do not move these back to the .cpp
++// unless/until the NDK is upgraded past 26.
+ template <ResolvableOp TOperation>
+ class TransformOperationInterpolator<TOperation> : public StyleOperationInterpolator {
+  public:
+   TransformOperationInterpolator(
+       const std::shared_ptr<TOperation> &defaultOperation,
+-      ResolvableValueInterpolatorConfig config);
++      ResolvableValueInterpolatorConfig config)
++      : StyleOperationInterpolator(defaultOperation), config_(std::move(config)) {}
+ 
+   std::unique_ptr<StyleOperation> interpolate(
+       double progress,
+       const std::shared_ptr<StyleOperation> &from,
+       const std::shared_ptr<StyleOperation> &to,
+-      const StyleOperationsInterpolationContext &context) const override;
++      const StyleOperationsInterpolationContext &context) const override {
++    const auto &fromOp = *std::static_pointer_cast<TOperation>(from);
++    const auto &toOp = *std::static_pointer_cast<TOperation>(to);
++    return std::make_unique<TOperation>(
++        fromOp.value.interpolate(progress, toOp.value, getResolvableValueContext(context)));
++  }
+ 
+   std::shared_ptr<StyleOperation> resolveOperation(
+       const std::shared_ptr<StyleOperation> &operation,
+-      const StyleOperationsInterpolationContext &context) const override;
++      const StyleOperationsInterpolationContext &context) const override {
++    const auto &resolvableOp = std::static_pointer_cast<TOperation>(operation);
++    const auto &resolved = resolvableOp->value.resolve(getResolvableValueContext(context));
++
++    if (!resolved.has_value()) {
++      throw std::invalid_argument(
++          "[Reanimated] Cannot resolve resolvable operation: " + operation->getOperationName() +
++          " for node with tag: " + std::to_string(context.node->getTag()));
++    }
++
++    return std::make_shared<TOperation>(resolved.value());
++  }
+ 
+  protected:
+   const ResolvableValueInterpolatorConfig config_;
+ 
+   ResolvableValueInterpolationContext getResolvableValueContext(
+-      const StyleOperationsInterpolationContext &context) const;
++      const StyleOperationsInterpolationContext &context) const {
++    return ResolvableValueInterpolationContext{
++        .node = context.node,
++        .fallbackInterpolateThreshold = context.fallbackInterpolateThreshold,
++        .viewStylesRepository = context.viewStylesRepository,
++        .relativeProperty = config_.relativeProperty,
++        .relativeTo = config_.relativeTo};
++  }
+ };
+ 
+ } // namespace reanimated::css
+diff --git a/node_modules/react-native-reanimated/android/build.gradle.kts b/node_modules/react-native-reanimated/android/build.gradle.kts
+index 2cf91d0..7492d79 100644
+--- a/node_modules/react-native-reanimated/android/build.gradle.kts
++++ b/node_modules/react-native-reanimated/android/build.gradle.kts
+@@ -199,7 +199,8 @@ android {
+                     "-DREANIMATED_PROFILING=$REANIMATED_PROFILING",
+                     "-DREANIMATED_VERSION=$REANIMATED_VERSION",
+                     "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON",
+-                    "-DREANIMATED_FEATURE_FLAGS=$REANIMATED_FEATURE_FLAGS"
++                    "-DREANIMATED_FEATURE_FLAGS=$REANIMATED_FEATURE_FLAGS",
++                    "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+                 )
+                 abiFilters.addAll(reactNativeArchitectures())
+                 targets("reanimated")

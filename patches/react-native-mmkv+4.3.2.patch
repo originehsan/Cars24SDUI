@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-mmkv/android/build.gradle b/node_modules/react-native-mmkv/android/build.gradle
+index e2aa501..874c4e9 100644
+--- a/node_modules/react-native-mmkv/android/build.gradle
++++ b/node_modules/react-native-mmkv/android/build.gradle
+@@ -51,9 +51,9 @@ android {
+         cppFlags "-frtti -fexceptions -Wall -Wextra -fstack-protector-all"
+         def mmkvLogLevel = rootProject.hasProperty("MMKV_logLevel") ? rootProject.property("MMKV_logLevel") : null
+         if (mmkvLogLevel != null && mmkvLogLevel != "") {
+-          arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON", "-DMMKV_LOG_LEVEL=${mmkvLogLevel}"
++          arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON", "-DMMKV_LOG_LEVEL=${mmkvLogLevel}", "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+         } else {
+-          arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
++          arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON", "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+         }
+         abiFilters (*reactNativeArchitectures())
+ 

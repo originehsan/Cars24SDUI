@@ -1,24 +1,28 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { ErrorBoundary } from 'react-error-boundary';
-import { ScreenShellSchema, SectionSchema, SectionShellSchema } from '@sdui/schema/types';
+import { ScreenShellSchema, SectionSchema } from '@sdui/schema/types';
 import { isComponentType } from '@core/constants/componentTypes';
 import { resolveComponent } from './componentRegistry';
 import { UnknownComponentFallback } from './fallback';
 
 function SDUINode({ raw }: { raw: unknown }) {
-  const shell = SectionShellSchema.safeParse(raw);
-  if (!shell.success) {
-    console.warn('[SDUI] Dropping malformed section (bad shell):', shell.error.issues);
+  // OPTIMIZATION (see PERF.md): this used to run two full zod passes per
+  // node (shell + full schema). The type-peek below is plain JS — zero
+  // validation cost — so we only pay for zod once, on the full schema.
+  const peek = raw as { visible?: boolean; component?: { type?: string; id?: string } } | null;
+  if (!peek || typeof peek !== 'object') {
+    console.warn('[SDUI] Dropping malformed section (not an object)');
     return null;
   }
-  if (!shell.data.visible) return null;
+  if (peek.visible === false) return null;
 
-  if (!isComponentType(shell.data.component.type)) {
+  const rawType = peek.component?.type;
+  if (typeof rawType !== 'string' || !isComponentType(rawType)) {
     return (
       <UnknownComponentFallback
-        componentType={shell.data.component.type}
-        componentId={shell.data.component.id}
+        componentType={String(rawType)}
+        componentId={String(peek.component?.id ?? 'unknown')}
       />
     );
   }
