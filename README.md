@@ -2,6 +2,16 @@
 
 A Server-Driven UI system built for the Cars24 Mobile Engineering assignment. The server sends JSON; the client renders the full page from it. Layout changes ship as JSON updates, not app releases.
 
+**At a glance:**
+- Home + Car Detail screens, 13 component types, 15 section instances, 2 reused across screens
+- Three-tier schema (Screen → Section → Component), zod-validated, unknown types fall back gracefully instead of crashing
+- React Native 0.86, New Architecture, Zustand + TanStack Query, no Redux/Tailwind
+- SDUI vs. a hardcoded twin benchmarked on a release build — `PERF.md`
+- Coverage claim and known gaps against a screen this system hasn't seen — `COVERAGE.md`
+- AI tool usage, prompts, rejections, and one documented failure — `AI_WORKFLOW.md`
+
+Everything below expands on these points — architecture, schema rationale, trade-offs, and the reasoning behind each.
+
 ## Setup
 
 ```bash
@@ -23,7 +33,7 @@ Across both screens, 13 component types cover 15 section instances, two reused a
 
 ## Architecture
 
-Three-tier schema: **Screen → Section → Component**. This structure is not novel — it is the pattern that Airbnb (Ghost Platform), DoorDash (Facets), and Faire converged on independently for the same problem. The schema, component set, and renderer here were designed and built from scratch for this assignment; no external SDUI library code was used.
+Three-tier schema: **Screen → Section → Component**. Each tier owns exactly one concern: Screen owns section ordering, Section owns visibility, versioning, and styling independent of what's inside it, Component owns rendering. Keeping those separate means a change to how sections handle visibility, for instance, never touches component-rendering code. (Airbnb, DoorDash, and Faire arrived at a similar three-tier split independently, for the same reason — a confirmation found after designing this one, not the source of the decision.) The schema, component set, and renderer here were designed and built from scratch for this assignment; no external SDUI library code was used.
 
 ```
 src/
@@ -59,7 +69,7 @@ The schema is intentionally flat — a `Section` wraps exactly one `Component`, 
 
 ### Component registry
 
-`src/sdui/registry/componentRegistry.ts` maps each type string to its React component. Adding a new type is one new component file plus one registry line — the registry and renderer are never modified to add a type.
+`src/sdui/registry/componentRegistry.ts` maps each type string to its React component, as a single object built once at module load rather than recreated per render — the same component reference comes back on every lookup, so React's reconciliation matches components across renders instead of remounting them. Adding a new type is one new file plus one registry line; the renderer itself is never touched to add a type, which matters most in exactly the scenario this system is built for — extending coverage under time pressure against an unfamiliar screen, without modifying code every other component depends on.
 
 ### Actions
 
@@ -71,7 +81,7 @@ Tapping "Check eligibility" in the EMI calculator fires a `track`/`navigate` act
 
 ### Unknown-component fallback
 
-A section with an unrecognized `type` renders a visible fallback (component type and id shown) instead of being dropped or crashing the screen. This is demonstrated live in `home.json` and covered by the schema-contract tests.
+A section with an unrecognized `type` renders a visible fallback (component type and id shown) instead of being dropped silently or crashing the screen. A silently-dropped section is indistinguishable from an intentionally-empty one — a real schema-version gap would pass unnoticed. A visible fallback makes the gap obvious without taking down the sections around it. Demonstrated live in `home.json` (`loyalty_widget_v2`, an intentionally unregistered type).
 
 ### Versioning
 
@@ -91,7 +101,11 @@ The production extension of this — not implemented here, per the assignment's 
 
 ## Stack
 
-React Native 0.86.2, New Architecture (Fabric). TypeScript throughout. Zustand for local UI state, TanStack Query for server state — no Redux. `StyleSheet.create()` for styling — no Tailwind/NativeWind. Functional components only, including the error boundary (via `react-error-boundary`'s wrapper rather than a hand-written class component). React Navigation (native-stack) for routing. `@gorhom/bottom-sheet` for the EMI eligibility sheet. This combination — Zustand/TanStack Query over Redux, `StyleSheet` over Tailwind, functional components only — also matches Cars24's own published engineering conventions.
+React Native 0.86.2, New Architecture (Fabric). TypeScript throughout.
+
+State is split by kind rather than centralized in one store: Zustand holds local UI state (e.g. whether the bottom sheet is open) because state this small and scoped doesn't need Redux's boilerplate; TanStack Query owns server state (the fetched SDUI JSON) because it already solves caching, request de-duplication, and loading/error states that would otherwise be hand-rolled per screen. `StyleSheet.create()` is used throughout rather than a utility-class library, since RN's `StyleSheet` compiles to a flat, referenced object with no runtime class-parsing cost, and the design-token layer in `core/theme` already gives the same reuse benefit without an added dependency. Functional components only, including the error boundary (via `react-error-boundary`'s wrapper rather than a hand-written class component, since no other part of this codebase needed a class to begin with). React Navigation (native-stack) for routing. `@gorhom/bottom-sheet` for the EMI eligibility sheet.
+
+This combination happens to also match Cars24's own published engineering conventions — confirmed by reading their engineering blog after the fact, not the reason any of the above was chosen.
 
 NDK is pinned to 27.1.12297006 with an explicit `-lc++_shared` linker flag, required for a Windows-specific CMake/Ninja toolchain issue on this NDK version; see `AGENTS.md` for the specific configuration.
 
