@@ -4,7 +4,11 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 36
         targetSdkVersion = 36
-        ndkVersion = "26.1.10909125"
+        // RN 0.84+ uses C++20 std::format in core headers (graphicsConversions.h),
+        // which needs NDK 27.1+; NDK 26.x has partial <format> support that
+        // silently returns a stub type instead of std::string and fails to
+        // compile against folly::dynamic.
+        ndkVersion = "27.1.12297006"
         kotlinVersion = "2.1.20"
     }
     repositories {

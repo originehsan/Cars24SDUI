@@ -87,51 +87,54 @@ be edited together, never one without the other:
 
 ## Commands
 
-npx react-native run-android   -- build + install on connected device
-.\gradlew clean                -- from android/ folder, when native build is stuck
-tsc --noEmit                   -- type-check without emitting files
+npx react-native run-android          -- build + install on connected device
+.\gradlew assembleRelease             -- from android/ folder, build release APK
+.\gradlew clean                       -- from android/ folder, when native build is stuck
+Remove-Item -Recurse -Force app\.cxx  -- PowerShell, from android/ folder; clears stale
+                                         CMake/Ninja cache when build fails with
+                                         "ninja: error: failed recompaction: Permission denied"
+tsc --noEmit                          -- type-check without emitting files
 
 ## Known environment gotchas (do not "fix" these differently)
 
-- NDK is pinned to 26.1.10909125 in android/build.gradle
-  (NOT the auto-installed 27.1.12297006) — NDK 27+ has a Windows-only
-  C++ linking bug. Do not change this without re-verifying both the
-  linking bug AND the std::format issue below are still resolved.
+- NDK is pinned to 27.1.12297006 in android/build.gradle.
+  RN 0.86.2 core headers (graphicsConversions.h) use C++20 std::format,
+  which requires NDK 27+ (Clang 18). NDK 26 (Clang 17) had partial
+  <format> support that failed to compile against folly::dynamic.
+  Do NOT downgrade to NDK 26.
 
-- graphicsConversions.h in the react-android prefab package was
-  manually patched (std::format -> snprintf) to work around an RN 0.86.2
-  + NDK 26 incompatibility. This patch lives in the Gradle cache and is
-  lost if the cache is cleared — if native build errors reappear
-  mentioning std::format, re-apply the patch (see below for the diff).
-  IMPORTANT: The Gradle transform cache hash changes every time the cache
-  is regenerated. Do NOT hardcode a specific hash — instead search for
-  the file under `.gradle/caches/9.3.1/transforms/*/workspace/transformed/
-  react-android-0.86.2-debug/prefab/modules/reactnative/include/react/
-  renderer/core/graphicsConversions.h` and patch whichever hash is current.
-  The patch: replace `return std::format("{}%", dimension.value);`
-  with `static thread_local char buf[32]; snprintf(buf, sizeof(buf), "%g%%", dimension.value); return buf;`
-  Apply to BOTH:
-    1. `node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h`
-    2. The current Gradle cache copy (hash varies — find with dir search above)
+- CMake is pinned to 3.31.6 in android/app/build.gradle via
+  externalNativeBuild { cmake { version "3.31.6" } }.
+  The default CMake 3.22.1 bundled with AGP ships Ninja 1.10.2, which
+  fails on Windows with "Filename longer than 260 characters" for deeply
+  nested autolinked native builds (e.g. react-native-gesture-handler).
+  CMake 3.31.6 bundles Ninja 1.12+ which handles long paths correctly.
+  CMake 3.31.6 must be installed via Android SDK Manager:
+    sdkmanager "cmake;3.31.6"
 
-- react-native-reanimated 4.5.3 + NDK 26 (Clang 17) build failure:
-  Clang 17 cannot compile out-of-line definitions of C++20 constrained
-  partial template specializations (error: "type constraint differs in
-  template redeclaration"). This bug is fixed in Clang 18 (NDK 27+).
-  Fix applied: moved the ResolvableOp-constrained partial specialization
-  method bodies from TransformOperationInterpolator.cpp inline into
-  TransformOperationInterpolator.h. Also added #include <stdexcept>,
-  <string>, <utility> to that header.
-  Files patched:
-    - node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/
-      interpolation/transforms/TransformOperationInterpolator.h
-    - node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/
-      interpolation/transforms/TransformOperationInterpolator.cpp
-  If reanimated is upgraded and this error reappears, check if the new
-  version still has out-of-line definitions for constrained template
-  specializations in other files (search for `template <.*Op ` in .cpp
-  files under node_modules/react-native-reanimated/Common/cpp) and
-  apply the same inline-into-header fix.
+- NDK 27 + libc++_shared linking: The NDK 27 unified toolchain does not
+  auto-link "-lc++_shared" for ANDROID_STL=c++_shared. Without an
+  explicit flag, the final link fails with "undefined symbol" for
+  std::string, __cxa_guard_acquire, operator new, etc.
+  Fix already applied in android/app/build.gradle defaultConfig:
+    cmake { arguments "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared" }
+
+- ninja: error: failed recompaction: Permission denied
+  Happens when a previous Gradle/Ninja build was killed mid-flight
+  (e.g. via task cancellation), leaving a partially-written build.ninja
+  file in android/app/.cxx that the next build cannot overwrite.
+  Fix: from the android/ folder, run:
+    Remove-Item -Recurse -Force app\.cxx
+  Then re-run the build. Do NOT run gradlew clean for this — it won't
+  remove .cxx (that's a CMake output dir, not a Gradle output dir).
+
+- react-native-reanimated 4.5.3 constrained template patch (HISTORICAL):
+  Previously patched TransformOperationInterpolator.h/.cpp to move
+  ResolvableOp-constrained partial specialization bodies inline, to work
+  around a Clang 17 (NDK 26) bug. Now that NDK 27 (Clang 18) is in use,
+  this patch is no longer needed for new builds. The patched files remain
+  in node_modules as-is (they are still valid C++ on Clang 18). If
+  reanimated is reinstalled or upgraded, no re-patching is required.
 
 ## Verification checklist before treating any AI-generated code as done
 

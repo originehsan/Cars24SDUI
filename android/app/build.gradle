@@ -77,12 +77,35 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
+    // Pin to a newer CMake (bundles Ninja >=1.11, which supports Windows long
+    // paths). The default 3.22.1 ships Ninja 1.10.2, which fails with
+    // "Filename longer than 260 characters" on deeply nested autolinked
+    // native builds (e.g. react-native-gesture-handler's codegen sources).
+    externalNativeBuild {
+        cmake {
+            version "3.31.6"
+        }
+    }
+
     namespace "com.cars24sdui"
     defaultConfig {
         applicationId "com.cars24sdui"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
+        externalNativeBuild {
+            cmake {
+                // NDK 27's unified toolchain path in CMake's Android platform files
+                // only appends "-stdlib=libc++" for ANDROID_STL=c++_shared; unlike
+                // c++_static it never adds the actual "-lc++_shared" link library,
+                // relying on clang++'s default auto-link behavior — which the NDK
+                // driver does NOT do. Without this, the final link fails with
+                // "undefined symbol" for basic libc++ symbols (std::string,
+                // __cxa_guard_acquire, operator new, ...). Same fix applied to
+                // react-native-nitro-modules, -worklets, -reanimated, -mmkv.
+                arguments "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared"
+            }
+        }
         versionName "1.0"
     }
     signingConfigs {
