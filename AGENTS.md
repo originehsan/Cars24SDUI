@@ -3,14 +3,22 @@
 Context/rules file for AI coding assistants (Claude Code, Cursor, etc.)
 working on this project. Read this before generating any code.
 
+This file overrides generic React Native or JavaScript best practices
+you may default to. If something here conflicts with a pattern you've
+seen in public examples or documentation, follow this file.
+
 ## Project
 
 Server-Driven UI (SDUI) system for Cars24's mobile take-home assignment.
 Server sends JSON → client renders native UI from a component registry.
-Goal: schema-driven, generalizable, production-quality — not a renderer
+Goal: schema-driven, generalizable, and extensible — not a renderer
 hardcoded to one screen.
 
-## Stack (matches Cars24's own engineering conventions — do not deviate)
+## Stack (also matches conventions from Cars24's public engineering blog — do not deviate)
+
+Do not add a new dependency to solve a problem the existing stack
+already handles. Check what's already installed before reaching for
+a new package.
 
 - React Native 0.86.2, New Architecture (Fabric) — already enabled by default
 - TypeScript, strict mode
@@ -22,17 +30,25 @@ hardcoded to one screen.
   the ONE exception is react-error-boundary's internal implementation,
   which we consume via its functional <ErrorBoundary> wrapper, never
   hand-write a class ourselves.
-- Lists: @shopify/flash-list (FlashList v2) for all rails/grids.
-  Never use FlatList for anything with 20+ items. Never pass an inline
-  arrow function to renderItem — define it outside the component or
-  memoize with useCallback, and wrap item components in React.memo.
+- Lists: ScrollView for anything under ~50 items (every list in this
+  project currently tops out around 10). @shopify/flash-list (FlashList
+  v2) is the documented choice once a list's item count grows past
+  that threshold, or profiling shows ScrollView struggling — install
+  and wire it in only when a screen actually needs it, not preemptively.
+  If FlashList is used, never pass an inline arrow function to
+  renderItem — define it outside the component or memoize with
+  useCallback, and wrap item components in React.memo.
 - Validation: zod discriminated unions for the SDUI schema.
   Every component type in the registry must have a matching zod schema.
 - Slider: @react-native-community/slider (single-handle, used twice
   for the EMI calculator — down payment and duration are two SEPARATE
   sliders, not one dual-handle range slider).
-- Offline cache: react-native-mmkv for caching the last-good SDUI
-  JSON payload.
+- Offline cache: react-native-mmkv is installed as a dependency. The
+  caching logic itself (writing/reading the last-good SDUI JSON
+  payload) has not been implemented yet — do not assume it exists
+  when reasoning about fetch/offline behavior. If implementing it,
+  wire it into src/core/api/sduiService.ts as a fallback when the
+  network fetch fails.
 
 ## Path aliases
 
@@ -47,15 +63,16 @@ be edited together, never one without the other:
 
 - Business logic goes in custom hooks (src/core/hooks/), never inline
   in components. Pure functions (e.g. EMI formula) go in src/core/utils/
-  and must be unit-testable without any React/RN import.
+  and must be unit-testable without any React/RN import. If unsure
+  whether something belongs in a hook or a component, put it in a hook.
 - src/core/ui/ = dumb, reusable design-system primitives (Button, Card,
   Text, Image, Skeleton). No business logic, no navigation, no API calls.
   SDUI components in src/sdui/components/ must be BUILT FROM these
   primitives, not raw <View>/inline styles.
 - Barrel exports (index.ts) are allowed but must use named exports
-  only — never export *. Wildcard exports hurt tree-shaking and
-  bundle size (verified: ~15-45% bundle bloat in real-world tests) and
-  can hide circular dependencies. Keep barrels one level deep only.
+  only — never export *. Wildcard exports can increase bundle size
+  and make circular dependencies harder to detect. Keep barrels one
+  level deep only.
 - src/sdui/constants/componentTypes.ts (or src/core/constants/) is
   the single source of truth for component type strings — both the zod
   schema and the registry import from here. Never hardcode type strings
@@ -69,21 +86,43 @@ be edited together, never one without the other:
 - Validate each JSON node independently with safeParse. If one node
   fails validation, drop only that node and render the rest of the
   screen — never blank the whole screen for one bad node.
-- Cap recursion depth when walking nested sections (protect against
-  circular/malformed JSON).
+- The schema is flat by design — a Section wraps exactly one Component,
+  no children[] nesting (see README.md's Schema section for why). There
+  is currently nothing to walk recursively. If recursive composition is
+  introduced later, cap traversal depth at that point to guard against
+  circular/malformed payloads — don't add this now for a case that
+  doesn't exist yet.
 - Wrap the SDUI renderer in react-error-boundary's <ErrorBoundary>
   as a second line of defense, even after schema validation.
 - Any new SDUI component type = one new file + one registry line.
-  Never modify the renderer/registry logic itself to add a type
-  (Open/Closed principle — this is explicitly judged in the assignment).
+  Adding a type is additive only — never modify the renderer or
+  registry logic itself to add one.
+- When a new screen's content doesn't fit existing components, prefer
+  extending the schema (a new component type, a new optional prop) over
+  adding conditionals in a component that only apply to one screen.
+  Logic that only works for one specific screen belongs in that
+  screen's JSON data, not in component code.
+- Never replace an existing abstraction because a simpler version
+  seems possible. Prefer extending the current architecture; if you
+  think something should be removed or restructured, say so and wait
+  for confirmation rather than doing it.
 
 ## Testing
 
-- Jest + React Native Testing Library, test files colocated
-  (Component.test.tsx next to Component.tsx).
-- Always include: a test that malformed JSON doesn't crash the renderer,
-  and a test that an unknown component type renders the fallback.
-- Detox for E2E if time allows (not required for the 72h scope).
+No automated tests exist in this project yet (`npm test` — verify
+before assuming otherwise). The two behaviors this section used to
+prescribe as test cases were instead verified manually, on-device,
+with logged evidence: malformed JSON on a known component type is
+dropped without crashing the screen (confirmed via `adb logcat`
+grep for the renderer's drop-warning), and an unknown component type
+renders the fallback component (confirmed visually and via the same
+log). See `AI_WORKFLOW.md`, Story 3, for the exact test payloads used.
+
+If automated tests are added later: Jest + React Native Testing
+Library, test files colocated (Component.test.tsx next to
+Component.tsx). Start with the two cases above, since they already
+have known-good expected behavior to assert against. Detox for E2E
+if time allows — not required for the 72h scope.
 
 ## Commands
 
@@ -93,7 +132,7 @@ npx react-native run-android          -- build + install on connected device
 Remove-Item -Recurse -Force app\.cxx  -- PowerShell, from android/ folder; clears stale
                                          CMake/Ninja cache when build fails with
                                          "ninja: error: failed recompaction: Permission denied"
-tsc --noEmit                          -- type-check without emitting files
+npx tsc --noEmit                      -- type-check without emitting files
 
 ## Known environment gotchas (do not "fix" these differently)
 
@@ -136,9 +175,18 @@ tsc --noEmit                          -- type-check without emitting files
   in node_modules as-is (they are still valid C++ on Clang 18). If
   reanimated is reinstalled or upgraded, no re-patching is required.
 
+- Native module patches (react-native-gesture-handler, react-native-mmkv,
+  react-native-nitro-modules, react-native-reanimated,
+  react-native-screens, react-native-worklets) live in patches/ and
+  reapply automatically via patch-package on npm install (see the
+  postinstall script in package.json). Do not manually edit files in
+  node_modules to fix a native issue — check patches/ first, and add
+  a new patch there via patch-package rather than a one-off edit that
+  won't survive the next install.
+
 ## Verification checklist before treating any AI-generated code as done
 
-1. tsc --noEmit passes
+1. npx tsc --noEmit passes
 2. ESLint passes
 3. New dependency? Confirm it exists on npm and is actively maintained
    before installing — do not trust a package name suggested by AI

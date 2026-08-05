@@ -91,13 +91,15 @@ The production extension of this — not implemented here, per the assignment's 
 
 ## Trade-offs and scope decisions
 
-- **Flat schema, no recursive nesting** — covered above. Would generalize further; not needed for the screens built here.
-- **Tab-switching is local UI state, not JSON-driven.** The "Wishlisted / Hot deals" and "Features / Specifications" toggles use component-local state rather than firing an SDUI action on selection. The assignment's interactive-element requirement is met through the navigation-intent path instead (tapping a car card fires a `navigate` action, verified via the action handler). Making tab content itself swap based on a server-driven `update_state` action would be a natural next step if tab content needed to vary per-request rather than being present in the initial payload.
-- **EMI calculation is client-side; the tenure interaction is action-observable.** Covered under Actions above.
-- **Section-level styling only.** `style` overrides (`backgroundColor`, `textColor`) apply at the section wrapper, not as deep per-field overrides inside each component's internal styling. This covers every real case found across both screens; a component-level style-override system would be the next extension if a screen needed finer control.
-- **Conditional rendering is a boolean flag, not an expression language.** `visible` is computed server-side and sent as `true`/`false` — there's no client-side condition evaluation. This matches how every production SDUI system reviewed for this assignment handles it (the server, which has the user/session context, decides visibility; the client just respects the flag).
-- **No i18n/RTL implementation.** Single-language, LTR only. Content strings arrive from JSON already, so localizing content is a server-side concern; RTL layout support would require auditing every component's directional styles, which was out of scope for this timebox.
-- **Lists use `ScrollView`, not FlashList.** Every list in both screens tops out around 10 items — well under the ~50-item threshold where FlashList's windowing starts to matter. `@shopify/flash-list` is the documented choice in `AGENTS.md` once list sizes grow; it wasn't pulled into any component here because nothing in this dataset needs it yet.
+| Decision | Why | Would change if… |
+|---|---|---|
+| Flat schema — no recursive `children[]` | No section across either screen needed internal composition of multiple independent components | A future screen needed one card to hold two unrelated components |
+| Tab-switching is local state, not JSON-driven | The interactive-element requirement is already met via the navigate action on car cards; current tab content is static per payload | Tab content needed to vary per-request via a server-driven `update_state` action |
+| EMI calculation runs client-side | The interaction stays observable through the `track` action even though the math is local (see Actions above) | — |
+| Styling overrides are section-level only, not per-field | Covers every real case found across both screens | A screen needed finer control inside a single component's internal layout |
+| Conditional rendering is a boolean flag, not an expression language | The server has the session/user context to decide visibility; pushing that logic to the client duplicates state the server already owns | — |
+| No i18n/RTL | Content strings already arrive from JSON (a server concern); RTL needs a directional-style audit across every component | Localization was in scope for this timebox |
+| Lists use `ScrollView`, not FlashList | Every list tops out around 10 items, well under the ~50-item threshold where FlashList's virtualization (windowed rendering) starts to matter | List sizes grew significantly — `@shopify/flash-list` is already the documented choice in `AGENTS.md` for that case |
 
 ## Stack
 

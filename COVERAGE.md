@@ -1,5 +1,7 @@
 # COVERAGE.md
 
+**At a glance:** 13 component types across 15 section instances, 2 reused across screens. Estimated coverage for a new, unseen Cars24 screen: 65–75% renders from JSON alone. The measured number from actually building a second screen from scratch was 9% zero-new-code — not a bad sign, see below for why. Known gaps needing new client code today: recursive composition, dual-thumb sliders, maps/video, data-entry forms.
+
 ## Component registry
 
 13 registered types, defined once in `src/core/constants/componentTypes.ts` and enforced at compile time — a `tsc`-checked assertion (`_typesInSync` in `sdui/schema/types.ts`) fails the build if this list and the zod discriminated union ever drift apart, so the two can't silently disagree.

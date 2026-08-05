@@ -1,8 +1,10 @@
 # AI_WORKFLOW.md
 
+**At a glance:** Claude used for implementation and analysis under direction — architectural calls (flat vs. recursive schema, state-management split, action-as-array for chaining) were specified before code was generated, not left to the model to decide. An IDE-integrated agent used separately for autonomous native-build fixes, under explicit constraints. Three prompt→outcome stories below: a build-fix agent's output diffed and regression-tested before being trusted; three independent AI sources gave conflicting performance theories, none acted on without independent verification; a weak verification test was rejected and replaced with a harder one. One AI failure: a plausible-sounding optimization hypothesis was implemented, measured, and found wrong. Verification strategy at the bottom.
+
 ## Tool stack
 
-Claude (conversational assistant) for architecture design, schema design, component implementation, debugging guidance, and documentation. An IDE-integrated coding agent (Antigravity, VS Code-based) for autonomous diagnosis and fixing of native Android build failures directly on the local machine — invoked with structured prompts rather than open-ended requests.
+Before implementation, I decided the schema shape, the state-management split, and the action model — a flat schema over a recursive one, Zustand for local UI state against TanStack Query for server state, action arrays instead of single actions to support chaining. Claude was used after each such decision — to implement it, to lay out trade-offs between options that had already been narrowed down, and to challenge a decision when asked to stress-test it. Its output was corrected or rewritten where it didn't hold up under testing (see below). An IDE-integrated coding agent (Antigravity, VS Code-based) was used separately for autonomous diagnosis and fixing of native Android build failures directly on the local machine — invoked with explicit constraints rather than open-ended requests.
 
 **Context file:** `AGENTS.md`, in the project root. It documents the stack conventions (state management split, styling approach, functional-components-only rule and its one library-level exception), the file structure and where business logic belongs, SDUI-specific non-negotiables (never crash on an unknown type, validate before rendering, one file per new component type), known environment gotchas (NDK version and why, native-module patches managed via `patch-package`), and a verification checklist. It was updated throughout the build as new gotchas were found, not written once and left static.
 
@@ -24,34 +26,30 @@ Claude (conversational assistant) for architecture design, schema design, compon
 
 **What was rejected:** none of the three hypotheses were acted on directly, and the suggested configuration flag was specifically not added to the codebase, since its existence in the installed zod version's type definitions was never confirmed. Instead, the actual variable that mattered — debug versus release build — was isolated through a controlled before/after measurement, which resolved the question independently of any of the three answers (see the AI failure below for the related finding).
 
-### 3. Auditing AI-generated documentation against source data
+### 3. Escalating a weak verification test into a rigorous one
 
-**Prompt:** after each of `README.md`, `PERF.md`, and `COVERAGE.md` was drafted, a follow-up prompt explicitly requested a critical audit pass — reading the draft fresh, cross-checking every number against the actual source files rather than against what had been discussed earlier in the conversation.
+**Prompt:** an initial live-edit demo used a single string-field change (a placeholder label) to show the JSON-to-render pipeline working. This was recognized as insufficient evidence — a trivial text change proves almost nothing about the system's resilience claims, since any templating approach could do the same. The follow-up prompt specified three deliberately hard, concrete test cases instead: a section using a recognized component type with invalid prop types (wrong data shape, not just wrong values), a section using a genuinely unregistered component type with also-malformed internal structure, and a rail with a larger-than-typical item count.
 
-**Outcome:** each pass found and corrected genuine errors that had made it into a first draft. `README.md`'s first version stated an unverified count of section instances; recounting directly from `home.json` and `car_detail.json` produced a different, lower number. `COVERAGE.md`'s first version claimed `text_block` was reused in `car_detail.json` — untrue; that file contains no `text_block` section at all. `PERF.md`'s first version reported that SDUI's rendering was faster than the static screen's without comment, despite SDUI doing more work per section — a counter-intuitive result left unexplained.
+**Outcome:** each case was added to the mock JSON and verified independently, not just visually. The malformed-but-recognized-type section rendered nothing and did not crash the rest of the screen; `adb logcat` grepped for the renderer's drop-warning confirmed it had been caught and logged by schema validation, not silently ignored by accident. The unregistered-and-malformed section rendered the fallback component. The larger rail rendered and scrolled normally. All three were then removed from the mock data before committing, so the shipped JSON stays a clean, realistic example rather than a permanent test fixture.
 
-**What was rejected/rewritten and why:** all three drafts were rejected as-written and corrected before being finalized. The section count was replaced with the recounted figure. The false `text_block` claim was replaced with the actual reuse pattern (a different component, reused within the same file). The unexplained performance number was not deleted or hidden — it was kept, with a caveat added stating the likely cause as an unverified hypothesis rather than presenting an unexplained result as if it needed no scrutiny.
-
-**What this represents:** treating a document as a first draft by default, not as finished output — the audit prompt was applied uniformly to every generated document in this repository, and none were accepted without it.
+**What was rejected and why:** the original single-field edit was rejected as a demo of "the system works" — it demonstrated only that a string can change, not that the schema-validation, fallback, or drop-and-continue behavior the assignment specifically asks for actually holds under bad input. The harder test was designed specifically to fail informatively — a case built to expose broken behavior, not to succeed cheaply.
 
 ## One AI failure
 
-**Context:** a debug-build measurement showed `zod`'s `safeParse` taking roughly 800ms to validate a small screen-shell schema — disproportionate for what the schema actually checks.
-
-**The failure:** Claude's diagnosis, within this same working session, was that the renderer's two-stage validation — a lightweight shell check for every section, followed by a full schema check for recognized types — was running redundant work, and that removing the first pass would measurably reduce parse time. This was a plausible-sounding hypothesis that was never actually profiled before being acted on.
-
-**Action taken and result:** the single-pass validation change was implemented and re-benchmarked. Parse time was unchanged — consistent in the 770–1066ms range across 17 debug-build runs both before and after the change. The hypothesis was wrong: the removed shell check was never the expensive part.
-
-**How it was caught:** a subsequent, unrelated investigation (comparing debug and release builds for a different reason) showed the same code measured on a release build at 19–22ms — a roughly 40× difference that had nothing to do with the validation architecture. The actual cause was debug-mode JS overhead, present regardless of which validation approach was used.
-
-**Outcome:** the single-pass change was kept in the codebase, since it's a legitimate simplification independent of performance, but `PERF.md` explicitly does not credit it as a fix — crediting an untested cause would have repeated the same mistake in the documentation.
+| Step | What happened |
+|---|---|
+| Context | A debug-build measurement showed `zod`'s `safeParse` taking roughly 800ms to validate a small screen-shell schema — disproportionate for what the schema actually checks. |
+| Hypothesis (proposed by Claude) | The renderer's two-stage validation — a lightweight shell check for every section, then a full schema check for recognized types — was doing redundant work; removing the shell-check pass should measurably reduce parse time. Never profiled before being acted on. |
+| Action and result | The single-pass validation change was implemented and re-benchmarked. Parse time was unchanged — 770–1066ms across 17 debug-build runs, both before and after. The hypothesis was wrong. |
+| How it was caught | A subsequent, unrelated investigation (comparing debug and release builds for a different reason) showed the same code at 19–22ms on release — a roughly 40× difference that had nothing to do with the validation architecture. |
+| Outcome | The single-pass change was kept as a legitimate simplification, but `PERF.md` does not credit it as a performance fix — crediting an untested cause would have repeated the same mistake in the documentation. |
 
 ## Verification strategy
+
+Verification happened before trusting AI output enough to build further on it — not after a feature was already considered finished.
 
 - `npx tsc --noEmit` run after every code change, before treating it as done — not just after a batch of changes.
 - Every feature verified on a physical device — visual confirmation plus `adb logcat` for anything with a side effect (actions firing, the unknown-component fallback rendering, the tenure slider's tracking event) — rather than trusting that code which type-checks also behaves correctly at runtime.
 - Native/build fixes regression-tested against the previously-working configuration, not just checked for whether the new path succeeds.
-- Numbers in generated documentation re-derived from the actual current source files (JSON payloads, schema, component registry) at write time, not reused from earlier estimates made mid-conversation.
 - AI-suggested APIs or configuration options not added to the codebase without confirming they exist in the actual installed package — an unverified suggestion is a lead to check, not something to paste in.
-- Technical questions with genuine uncertainty (the zod/Hermes investigation) cross-checked across multiple independent sources rather than accepted from a single answer, with disagreements between sources treated as a reason to verify independently rather than a reason to pick whichever answer sounded most confident.
-- Every generated document audited in a dedicated pass against source data before being treated as final, per the three examples above.
+- Technical questions with genuine uncertainty (the zod/Hermes investigation) compared across multiple independent AI systems rather than accepted from a single answer, with disagreements between them treated as a reason to verify independently rather than a reason to pick whichever answer sounded most confident.
