@@ -12,6 +12,10 @@ A Server-Driven UI system built for the Cars24 Mobile Engineering assignment. Th
 
 Everything below expands on these points — architecture, schema rationale, trade-offs, and the reasoning behind each.
 
+## Demo video
+
+[3–5 min walkthrough](https://drive.google.com/file/d/1nZyXe3-yB-gPpKEQ6lYB6ZkVHNwBIqe-/view?usp=sharing) — page rendering from JSON, the EMI tenure selector + bottom sheet, the unknown-component fallback, and a live JSON edit (a new section added, no client code touched).
+
 ## Setup
 
 ```bash
