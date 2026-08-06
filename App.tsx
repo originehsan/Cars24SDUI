@@ -9,7 +9,8 @@
  * @format
  */
 
-import { StatusBar, useColorScheme, View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import { colors } from '@core/theme/tokens';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -17,21 +18,18 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ErrorBoundary } from 'react-error-boundary';
 import { RootNavigator } from '@navigation/RootNavigator';
 import { EligibilityBottomSheet } from '@navigation/EligibilityBottomSheet';
-
+// StatusBar is now controlled per-screen (see HomeScreen/CarDetailScreen),
+// since different screens have different header colors underneath it.
 // One QueryClient for the app's whole lifetime — created outside the
 // component so it isn't recreated (and cache lost) on every re-render.
 const queryClient = new QueryClient();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  return (
-    <ErrorBoundary FallbackComponent={AppCrashFallback}>
+  return (    <ErrorBoundary FallbackComponent={AppCrashFallback}>
       <GestureHandlerRootView style={styles.flex}>
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider>
             <BottomSheetModalProvider>
-              <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
               <RootNavigator />
               <EligibilityBottomSheet />
             </BottomSheetModalProvider>

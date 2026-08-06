@@ -1,6 +1,9 @@
 {
   "schemaVersion": "1.0.0",
   "screenName": "car_detail",
+  "screenTitle": "2023 Mahindra XUV300 W6 1.2 PETROL",
+  "headerEmi": "EMI ₹11,651/mo",
+  "headerPrice": "₹6.60 lakh",
   "sections": [
     {
       "id": "sec-gallery",
@@ -42,22 +45,26 @@
             {
               "id": "g1",
               "title": "No repainted parts",
-              "description": "Original bodywork, great condition."
+              "description": "Original bodywork, great condition.",
+              "iconUrl": "spray"
             },
             {
               "id": "g2",
               "title": "As good as new car",
-              "description": "2 year old car. Feels brand new."
+              "description": "2 year old car. Feels brand new.",
+              "iconUrl": "star-outline"
             },
             {
               "id": "g3",
               "title": "Essential features",
-              "description": "AC, power windows, music system."
+              "description": "AC, power windows, music system.",
+              "iconUrl": "car"
             },
             {
               "id": "g4",
               "title": "180 mm ground clearance",
-              "description": "High clearance for bumpy roads."
+              "description": "High clearance for bumpy roads.",
+              "iconUrl": "arrow-expand-vertical"
             }
           ]
         }
@@ -123,19 +130,23 @@
           "items": [
             {
               "id": "i1",
-              "label": "No accident history"
+              "label": "No accident history",
+              "iconUrl": "shield-car"
             },
             {
               "id": "i2",
-              "label": "No odometer tampering"
+              "label": "No odometer tampering",
+              "iconUrl": "gauge"
             },
             {
               "id": "i3",
-              "label": "No water damages"
+              "label": "No water damages",
+              "iconUrl": "water-off"
             },
             {
               "id": "i4",
-              "label": "300-quality checks"
+              "label": "300-quality checks",
+              "iconUrl": "check-decagram"
             }
           ]
         }
@@ -150,7 +161,7 @@
           "eyebrow": "India's first and only",
           "title": "30 day return guarantee",
           "subtitle": "Best quality, guaranteed",
-          "imageUrl": "https://picsum.photos/seed/returnpolicy/800/300"
+         "imageUrl": "return-guarantee-banner"
         }
       }
     },
@@ -167,22 +178,28 @@
               "label": "Features",
               "items": [
                 {
-                  "label": "Sunroof/Moonroof"
+                  "label": "Sunroof/Moonroof",
+                  "iconUrl": "car-convertible"
                 },
                 {
-                  "label": "Steering Mounted Controls"
+                  "label": "Steering Mounted Controls",
+                  "iconUrl": "steering"
                 },
                 {
-                  "label": "Bluetooth Compatibility"
+                  "label": "Bluetooth Compatibility",
+                  "iconUrl": "bluetooth"
                 },
                 {
-                  "label": "Airbags"
+                  "label": "Airbags",
+                  "iconUrl": "airbag"
                 },
                 {
-                  "label": "TPMS - Tyre Pressure Monitoring"
+                  "label": "TPMS - Tyre Pressure Monitoring",
+                  "iconUrl": "gauge"
                 },
                 {
-                  "label": "ABS - Anti-lock Braking System"
+                  "label": "ABS - Anti-lock Braking System",
+                  "iconUrl": "car-brake-abs"
                 }
               ]
             },
@@ -220,12 +237,14 @@
             {
               "id": "w1",
               "title": "30-day return",
-              "description": "Buy it. Drive it. Return if it's not right for you"
+              "description": "Buy it. Drive it. Return if it's not right for you",
+              "iconUrl": "backup-restore"
             },
             {
               "id": "w2",
               "title": "Lifetime Warranty Upgrade",
-              "description": "All cars come with a 13-month warranty — upgrade to get lifetime coverage."
+              "description": "All cars come with a 13-month warranty — upgrade to get lifetime coverage.",
+              "iconUrl": "shield-check"
             }
           ]
         }

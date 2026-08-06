@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons/static';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 
@@ -19,6 +20,8 @@ interface Props {
 export function FeatureList({ title, items, accentColor }: Props) {
   const borderColor =
     accentColor === 'orange' ? colors.accent : accentColor === 'purple' ? colors.accentSecondary : colors.border;
+  const iconCircleColor =
+    accentColor === 'orange' ? colors.accent : accentColor === 'purple' ? colors.accentSecondary : colors.textMuted;
 
   return (
     <View style={[styles.container, { borderColor }]}>
@@ -30,7 +33,9 @@ export function FeatureList({ title, items, accentColor }: Props) {
       {items.map((item) => (
         <View key={item.id} style={styles.row}>
           {item.iconUrl ? (
-            <Image source={{ uri: item.iconUrl }} style={styles.icon} />
+            <View style={[styles.iconCircle, { backgroundColor: iconCircleColor }]}>
+              <MaterialDesignIcons name={item.iconUrl as any} size={20} color={colors.textOnPrimary} />
+            </View>
           ) : (
             <View style={styles.iconPlaceholder} />
           )}
@@ -57,7 +62,14 @@ const styles = StyleSheet.create({
   },
   header: { marginBottom: spacing.md },
   row: { flexDirection: 'row', marginBottom: spacing.lg, alignItems: 'flex-start' },
-  icon: { width: 40, height: 40, marginRight: spacing.md, borderRadius: radius.pill },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    marginRight: spacing.md,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   iconPlaceholder: {
     width: 40,
     height: 40,

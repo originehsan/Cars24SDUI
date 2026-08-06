@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons/static';
 import { Text } from '@core/ui';
 import { colors, spacing } from '@core/theme/tokens';
 
@@ -46,7 +47,9 @@ export function TabbedContent({ tabs, defaultTabId }: Props) {
       <View style={styles.itemsGrid}>
         {activeTab?.items.map((item, i) => (
           <View key={i} style={styles.item}>
-            {item.iconUrl ? <Image source={{ uri: item.iconUrl }} style={styles.icon} /> : null}
+            {item.iconUrl ? (
+              <MaterialDesignIcons name={item.iconUrl as any} size={20} color={colors.textPrimary} style={styles.icon} />
+            ) : null}
             <Text variant="body">{item.label}</Text>
             {item.value ? (
               <Text variant="caption" color="textSecondary">

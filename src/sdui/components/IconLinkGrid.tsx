@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons/static';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 
@@ -26,13 +27,12 @@ export function IconLinkGrid({ title, columns = 3, items }: Props) {
           {title}
         </Text>
       ) : null}
-
       <View style={styles.grid}>
         {items.map((item) => (
           <View key={item.id} style={[styles.itemWrapper, { width: itemWidth as any }]}>
             <Pressable style={styles.item}>
               {item.iconUrl ? (
-                <Image source={{ uri: item.iconUrl }} style={styles.icon} />
+                <MaterialDesignIcons name={item.iconUrl as any} size={28} color={colors.primary} style={styles.icon} />
               ) : (
                 <View style={styles.iconPlaceholder} />
               )}
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
-  icon: { width: 36, height: 36, marginBottom: spacing.xs },
+  icon: { marginBottom: spacing.xs },
   iconPlaceholder: {
     width: 36,
     height: 36,

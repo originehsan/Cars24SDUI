@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, TextInput, StyleSheet, Pressable } from 'react-native';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons/static';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 
@@ -15,28 +16,56 @@ interface Props {
   tabs: Tab[];
 }
 
+type TabIconName = 'view-grid' | 'car' | 'key' | 'cash';
+
+const TAB_ICONS: Record<string, TabIconName> = {
+  all: 'view-grid',
+  buy: 'car',
+  sell: 'key',
+  loans: 'cash',
+};
+
 export function HeaderSearch({ location, placeholder, tabs }: Props) {
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id);
+
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
-        <Text variant="label" color="textOnPrimary">📍 {location}</Text>
+        <View style={styles.locationGroup}>
+          <MaterialDesignIcons name="map-marker" size={16} color={colors.textOnPrimary} />
+          <Text variant="label" color="textOnPrimary" style={styles.locationText}>
+            {location}
+          </Text>
+        </View>
+        <Pressable style={styles.profileButton}>
+          <MaterialDesignIcons name="account" size={20} color={colors.primary} />
+        </Pressable>
       </View>
-
       <TextInput
         style={styles.searchBar}
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         editable={false} // visual only for now — wiring search comes later
       />
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsRow}>
-        {tabs.map((tab) => (
-          <Pressable key={tab.id} style={styles.tabChip}>
-            <Text variant="label" color="textOnPrimary">
-              {tab.label}
-            </Text>
-          </Pressable>
-        ))}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabsRow}>
+        {tabs.map((tab) => {
+          const isActive = tab.id === activeTab;
+          const iconName = TAB_ICONS[tab.id] ?? 'car';
+          return (
+            <Pressable key={tab.id} style={styles.tabChip} onPress={() => setActiveTab(tab.id)}>
+              <View style={[styles.iconCircle, isActive && styles.iconCircleActive]}>
+                <MaterialDesignIcons
+                  name={iconName}
+                  size={20}
+                  color={isActive ? colors.primary : colors.textOnPrimary}
+                />
+              </View>
+              <Text variant="label" color="textOnPrimary" style={styles.tabLabel}>
+                {tab.label}
+              </Text>
+            </Pressable>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -49,7 +78,22 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
     paddingHorizontal: spacing.md,
   },
-  topRow: { marginBottom: spacing.sm },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+  locationGroup: { flexDirection: 'row', alignItems: 'center' },
+  profileButton: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.pill,
+    backgroundColor: colors.textOnPrimary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  locationText: { marginLeft: spacing.xs },
   searchBar: {
     backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: radius.pill,
@@ -58,12 +102,21 @@ const styles = StyleSheet.create({
     color: colors.textOnPrimary,
     marginBottom: spacing.md,
   },
-  tabsRow: { flexDirection: 'row' },
+  tabsRow: { flexGrow: 1, flexDirection: 'row', justifyContent: 'space-between' },
   tabChip: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    marginRight: spacing.sm,
-    borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    width: 64,
   },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xs,
+  },
+  iconCircleActive: {
+    backgroundColor: colors.textOnPrimary,
+  },
+  tabLabel: { textAlign: 'center' },
 });

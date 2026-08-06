@@ -136,17 +136,34 @@
       }
     },
     {
-      "id": "sec-footer",
+      "id": "sec-footer-headline",
       "visible": true,
       "style": {
-        "backgroundColor": "#060B14",
+        "backgroundColor": "#4B3FE0",
         "textColor": "#FFFFFF"
       },
       "component": {
         "type": "text_block",
-        "id": "footer-1",
+        "id": "footer-headline",
         "props": {
-          "text": "better drives, better lives — Made with love in Gurugram",
+          "text": "better drives, better lives",
+          "align": "center",
+          "size": "large"
+        }
+      }
+    },
+    {
+      "id": "sec-footer-caption",
+      "visible": true,
+      "style": {
+        "backgroundColor": "#4B3FE0",
+        "textColor": "#E8E5FB"
+      },
+      "component": {
+        "type": "text_block",
+        "id": "footer-caption",
+        "props": {
+          "text": "Made with ❤️ in Gurugram",
           "align": "center"
         }
       }

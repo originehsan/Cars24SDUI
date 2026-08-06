@@ -8,14 +8,20 @@ interface Props {
   align?: 'left' | 'center' | 'right';
   textColor?: string;
   minHeight?: number;
+  size?: 'default' | 'large';
 }
 
-export function TextBlock({ text, align = 'left', textColor, minHeight }: Props) {
+export function TextBlock({ text, align = 'left', textColor, minHeight, size = 'default' }: Props) {
   return (
     <View style={[styles.container, minHeight ? { minHeight } : null]}>
       <Text
-        variant="body"
-        style={[styles.text, { textAlign: align }, textColor ? { color: textColor } : null]}
+        variant={size === 'large' ? 'h1' : 'body'}
+        style={[
+          styles.text,
+          { textAlign: align },
+          size === 'large' ? styles.textLarge : null,
+          textColor ? { color: textColor } : null,
+        ]}
       >
         {text}
       </Text>
@@ -26,4 +32,5 @@ export function TextBlock({ text, align = 'left', textColor, minHeight }: Props)
 const styles = StyleSheet.create({
   container: { padding: spacing.lg },
   text: {},
+  textLarge: { lineHeight: 30 },
 });

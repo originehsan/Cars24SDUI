@@ -5,6 +5,7 @@ import { colors, spacing, radius } from '@core/theme/tokens';
 import { runActions } from '@sdui/actions/actionHandler';
 import { resolveImageSource } from '@core/constants/localImages';
 import { resolveBadgeColors } from '@core/theme/badgeColors';
+
 interface Tab {
   id: string;
   label: string;
@@ -123,15 +124,15 @@ const styles = StyleSheet.create({
   },
   tabActive: { borderColor: colors.primary, backgroundColor: '#EEF0FD' },
   card: {
-    width: 200,
+    width: 220,
     marginRight: spacing.md,
     borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
     overflow: 'hidden',
     backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.border,
   },
-  image: { width: '100%', height: 120 },
+  image: { width: '100%', height: 140 },
   badge: {
     position: 'absolute',
     bottom: spacing.xs,

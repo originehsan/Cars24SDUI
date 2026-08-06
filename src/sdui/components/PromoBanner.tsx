@@ -3,6 +3,7 @@ import { View, Image, StyleSheet } from 'react-native';
 import { Text, Button } from '@core/ui';
 import { runActions } from '@sdui/actions/actionHandler';
 import { colors, spacing, radius } from '@core/theme/tokens';
+import { resolveImageSource } from '@core/constants/localImages';
 
 interface Props {
   imageUrl?: string;
@@ -16,7 +17,7 @@ interface Props {
 export function PromoBanner({ imageUrl, eyebrow, title, subtitle, ctaLabel, actions }: Props) {
   return (
     <View style={styles.container}>
-      {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.image} /> : null}
+      {imageUrl ? <Image source={resolveImageSource(imageUrl)} style={styles.image} resizeMode="cover" /> : null}
 
       <View style={styles.overlay}>
         {eyebrow ? (

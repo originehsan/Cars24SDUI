@@ -3,6 +3,7 @@ import { View, ScrollView, Image, Pressable, StyleSheet } from 'react-native';
 import { Text } from '@core/ui';
 import { colors, spacing, radius } from '@core/theme/tokens';
 import { resolveImageSource } from '@core/constants/localImages';
+
 interface Card {
   id: string;
   title: string;
@@ -58,15 +59,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FDECEC',
   },
   card: {
-    width: 140,
+    width: 160,
     marginRight: spacing.sm,
     borderRadius: radius.md,
     overflow: 'hidden',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accentSecondaryLight,
+    borderWidth: 1.5,
+    borderColor: colors.border,
   },
-  image: { width: '100%', height: 80 },
+  image: { width: '100%', height: 130 },
   cardTitle: {
     padding: spacing.sm,
-    color: colors.textOnPrimary,
+    color: colors.textPrimary,
   },
 });

@@ -11,6 +11,7 @@ const LOCAL_IMAGES: Record<string, ImageSourcePropType> = {
   'xuv300-side': require('../../assets/images/cars/xuv300-side.jpg'),
   'xuv300-rear': require('../../assets/images/cars/xuv300-rear.jpg'),
   'vento-front': require('../../assets/images/cars/vento-front.jpg'),
+  'return-guarantee-banner': require('../../assets/images/banners/return-guarantee-banner.jpg'),
 };
 
 /**
